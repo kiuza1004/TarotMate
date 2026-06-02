@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#1a0b2e" />
+<title>TarotMate - 실시간 타로점</title>
+<style>
+  :root {
+    --bg-deep: #0f0720;
+    --bg-mid: #1a0b2e;
+    --bg-soft: #2a1648;
+    --accent-gold: #f5d061;
+    --accent-gold-dim: #b89540;
+    --accent-purple: #8a5cf6;
+    --text-main: #f4f0fa;
+    --text-sub: #b9a8d4;
+    --card-back-1: #4a1d8a;
+    --card-back-2: #1a0b2e;
+    --card-face-1: #fdf6e3;
+    --card-face-2: #ede0c2;
+    --danger: #e07a5f;
+    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-hard: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top, var(--bg-mid) 0%, var(--bg-deep) 100%);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .app {
+    max-width: 480px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    padding: 8px 0 4px;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #fff5c2 50%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .header p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--text-sub);
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== Screen ===== */
+  .screen {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+  .screen.active {
+    display: flex;
+    animation: fadeIn 0.4s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Intro Screen ===== */
+  .intro-box {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(245, 208, 97, 0.18);
+    border-radius: 16px;
+    padding: 22px 18px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .intro-box label {
+    font-size: 14px;
+    color: var(--text-sub);
+    letter-spacing: 0.04em;
+  }
+  .intro-box textarea {
+    width: 100%;
+    min-height: 90px;
+    resize: none;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(245, 208, 97, 0.25);
+    border-radius: 10px;
+    color: var(--text-main);
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    line-height: 1.5;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .intro-box textarea:focus {
+    border-color: var(--accent-gold);
+  }
+  .intro-box textarea::placeholder {
+    color: rgba(185, 168, 212, 0.5);
+  }
+
+  .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
+    color: #2a1648;
+    box-shadow: 0 6px 18px rgba(245, 208, 97, 0.3);
+  }
+  .btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 3px 10px rgba(245, 208, 97, 0.25);
+  }
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    border: 1px solid rgba(245, 208, 97, 0.3);
+  }
+  .btn-secondary:active {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ===== Shuffle / Pick Screen ===== */
+  .question-display {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-sub);
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border-left: 3px solid var(--accent-gold);
+    line-height: 1.5;
+    word-break: keep-all;
+  }
+
+  .pick-info {
+    text-align: center;
+    font-size: 15px;
+    color: var(--accent-gold);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .pick-info .count {
+    color: var(--text-main);
+    font-size: 18px;
+  }
+
+  .deck-area {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 12px 0;
+    align-content: start;
+  }
+
+  /* ===== Card (shared) ===== */
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3.4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform var(--transition), opacity var(--transition);
+    perspective: 600px;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-back {
+    background:
+      linear-gradient(135deg, var(--card-back-1) 0%, var(--card-back-2) 100%);
+    border: 1.5px solid var(--accent-gold-dim);
+    box-shadow: var(--shadow-soft);
+  }
+  .card-back::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(245, 208, 97, 0.5);
+    border-radius: 5px;
+  }
+  .card-back::after {
+    content: "✦";
+    color: var(--accent-gold);
+    font-size: calc(1rem + 2vw);
+    text-shadow: 0 0 12px rgba(245, 208, 97, 0.6);
+  }
+  .card-front {
+    background: linear-gradient(150deg, var(--card-face-1) 0%, var(--card-face-2) 100%);
+    border: 1.5px solid var(--accent-gold-dim);
+    transform: rotateY(180deg);
+    flex-direction: column;
+    padding: 6px 4px;
+    color: #3a2618;
+    text-align: center;
+    box-shadow: var(--shadow-hard);
+  }
+  .card-front .num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    opacity: 0.65;
+  }
+  .card-front .symbol {
+    font-size: calc(1.5rem + 2vw);
+    line-height: 1;
+    margin: 4px 0;
+    color: var(--accent-gold-dim);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .card-front .name {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 0 2px;
+    word-break: keep-all;
+  }
+  .card-front .name-en {
+    font-size: 8px;
+    opacity: 0.6;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .card-front.reversed .card-front-content {
+    transform: rotate(180deg);
+  }
+  .card-front-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Deck card states */
+  .deck-area .card.shuffling {
+    animation: shuffleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  @keyframes shuffleIn {
+    0% { transform: translateY(-30px) rotate(var(--rot, 0deg)); opacity: 0; }
+    100% { transform: translateY(0) rotate(0); opacity: 1; }
+  }
+  .deck-area .card.picked {
+    opacity: 0.25;
+    transform: scale(0.92);
+    pointer-events: none;
+  }
+  .deck-area .card:not(.picked):active {
+    transform: scale(0.95);
+  }
+
+  /* ===== Result Screen ===== */
+  .result-area {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .result-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .result-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-slot .position-label {
+    font-size: 12px;
+    color: var(--accent-gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .result-slot .card {
+    width: 100%;
+  }
+
+  .interpret-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .interpret-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(245, 208, 97, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .interpret-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .interpret-card .pos {
+    font-size: 12px;
+    color: var(--accent-gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .interpret-card .card-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+  }
+  .interpret-card .orient {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .interpret-card .orient.upright {
+    background: rgba(138, 92, 246, 0.25);
+    color: #c4b3fc;
+  }
+  .interpret-card .orient.reversed {
+    background: rgba(224, 122, 95, 0.25);
+    color: #f0b6a3;
+  }
+  .interpret-card .keywords {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-sub);
+    word-break: keep-all;
+  }
+  .interpret-card .keywords strong {
+    color: var(--text-main);
+  }
+
+  .reset-area {
+    margin-top: 8px;
+  }
+
+  /* Small screen adjustments */
+  @media (max-width: 360px) {
+    .header h1 { font-size: 24px; }
+    .deck-area { grid-template-columns: repeat(3, 1fr); }
+    .card-front .symbol { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <h1>TarotMate</h1>
+    <p>오늘의 운명을 묻다</p>
+  </header>
+
+  <!-- ============ INTRO SCREEN ============ -->
+  <section class="screen active" id="screen-intro">
+    <div class="intro-box">
+      <label for="question-input">무엇이 궁금하신가요?</label>
+      <textarea
+        id="question-input"
+        placeholder="예) 이번 달 나의 연애운은 어떨까요?"
+        maxlength="200"></textarea>
+    </div>
+    <button class="btn btn-primary" id="btn-start">타로 리딩 시작</button>
+  </section>
+
+  <!-- ============ PICK SCREEN ============ -->
+  <section class="screen" id="screen-pick">
+    <div class="question-display" id="question-echo"></div>
+    <div class="pick-info">
+      카드 <span class="count" id="pick-count">0</span> / 3
+      <div style="font-size:12px;color:var(--text-sub);margin-top:4px;font-weight:400;">
+        마음에 드는 카드 3장을 순서대로 선택하세요
+      </div>
+    </div>
+    <div class="deck-area" id="deck-area"></div>
+  </section>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <section class="screen" id="screen-result">
+    <div class="question-display" id="question-echo-2"></div>
+    <div class="result-area">
+      <div class="result-cards" id="result-cards"></div>
+      <div class="interpret-list" id="interpret-list"></div>
+      <div class="reset-area">
+        <button class="btn btn-secondary" id="btn-reset">다시 점 보기</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // ============================================
+  // 1. TAROT CARD DATA
+  // ============================================
+  const TAROT_DECK = [
+    {
+      num: 0,
+      name: "바보",
+      nameEn: "The Fool",
+      symbol: "☼",
+      upright: "새로운 시작, 순수한 모험, 무한한 가능성, 자유로운 영혼",
+      reversed: "무모함, 어리석은 선택, 준비 부족, 충동적인 결정"
+    },
+    {
+      num: 1,
+      name: "마술사",
+      nameEn: "The Magician",
+      symbol: "∞",
+      upright: "창조력, 의지, 실행력, 잠재력을 현실로 이루는 힘",
+      reversed: "기만, 능력 부족, 미숙함, 기회를 놓침"
+    },
+    {
+      num: 2,
+      name: "여사제",
+      nameEn: "The High Priestess",
+      symbol: "☾",
+      upright: "직관, 내면의 지혜, 신비, 무의식의 메시지",
+      reversed: "직관 무시, 비밀이 드러남, 혼란, 표면적 판단"
+    },
+    {
+      num: 6,
+      name: "연인",
+      nameEn: "The Lovers",
+      symbol: "♡",
+      upright: "사랑, 조화, 깊은 관계, 중요한 선택",
+      reversed: "관계의 불화, 잘못된 선택, 유혹, 가치관의 충돌"
+    },
+    {
+      num: 10,
+      name: "운명의 수레바퀴",
+      nameEn: "Wheel of Fortune",
+      symbol: "✺",
+      upright: "전환점, 행운, 운명의 순환, 긍정적 변화",
+      reversed: "불운, 정체, 통제 상실, 나쁜 흐름의 반복"
+    },
+    {
+      num: 17,
+      name: "별",
+      nameEn: "The Star",
+      symbol: "★",
+      upright: "희망, 영감, 평온, 치유와 회복의 시간",
+      reversed: "절망, 자신감 상실, 비관, 길을 잃은 느낌"
+    },
+    {
+      num: 19,
+      name: "태양",
+      nameEn: "The Sun",
+      symbol: "☀",
+      upright: "성공, 활력, 기쁨, 모든 것이 밝아짐",
+      reversed: "일시적 좌절, 과한 자신감, 미뤄지는 성과"
+    },
+    {
+      num: 21,
+      name: "세계",
+      nameEn: "The World",
+      symbol: "✦",
+      upright: "완성, 성취, 통합, 새로운 단계로의 도약",
+      reversed: "미완성, 마무리 부족, 정체된 결말, 지연"
+    }
+  ];
+
+  const POSITIONS = ["과거", "현재", "미래"];
+
+  // ============================================
+  // 2. STATE MANAGEMENT
+  // ============================================
+  const state = {
+    question: "",
+    shuffledDeck: [],   // 셔플된 카드 배열
+    picked: [],         // 선택된 카드 인덱스 (deck-area상의 인덱스)
+    results: []         // [{ card, isReversed }, ...]
+  };
+
+  // ============================================
+  // 3. DOM REFERENCES
+  // ============================================
+  const $ = (sel) => document.querySelector(sel);
+  const screens = {
+    intro: $("#screen-intro"),
+    pick: $("#screen-pick"),
+    result: $("#screen-result")
+  };
+
+  // ============================================
+  // 4. UTILITY
+  // ============================================
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove("active"));
+    screens[name].classList.add("active");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+
+  // ============================================
+  // 5. CARD ELEMENT BUILDER
+  // ============================================
+  function buildCardEl({ card = null, isReversed = false, flipped = false } = {}) {
+    const el = document.createElement("div");
+    el.className = "card" + (flipped ? " flipped" : "");
+
+    const inner = document.createElement("div");
+    inner.className = "card-inner";
+
+    const back = document.createElement("div");
+    back.className = "card-face card-back";
+
+    const front = document.createElement("div");
+    front.className = "card-face card-front" + (isReversed ? " reversed" : "");
+
+    if (card) {
+      const content = document.createElement("div");
+      content.className = "card-front-content";
+      content.innerHTML = `
+        <div class="num">${String(card.num).padStart(2, "0")}</div>
+        <div class="symbol">${card.symbol}</div>
+        <div class="name">${card.name}</div>
+        <div class="name-en">${card.nameEn}</div>
+      `;
+      front.appendChild(content);
+    }
+
+    inner.appendChild(back);
+    inner.appendChild(front);
+    el.appendChild(inner);
+    return el;
+  }
+
+  // ============================================
+  // 6. SCREEN: INTRO
+  // ============================================
+  $("#btn-start").addEventListener("click", () => {
+    const q = $("#question-input").value.trim();
+    state.question = q || "오늘 나의 흐름은 어떤가요?";
+    startPickScreen();
+  });
+
+  // ============================================
+  // 7. SCREEN: PICK
+  // ============================================
+  function startPickScreen() {
+    // 질문 표시
+    $("#question-echo").textContent = "Q. " + state.question;
+
+    // 상태 초기화
+    state.shuffledDeck = shuffle(TAROT_DECK);
+    state.picked = [];
+    state.results = [];
+    updatePickCount();
+
+    // 덱 렌더링 (TAROT_DECK 길이만큼 카드 뒷면 표시)
+    const deckArea = $("#deck-area");
+    deckArea.innerHTML = "";
+
+    state.shuffledDeck.forEach((card, idx) => {
+      const cardEl = buildCardEl({ card: null, flipped: false });
+      cardEl.classList.add("shuffling");
+      cardEl.style.setProperty("--rot", (Math.random() * 16 - 8) + "deg");
+      cardEl.style.animationDelay = (idx * 0.04) + "s";
+      cardEl.dataset.idx = idx;
+      cardEl.addEventListener("click", () => onPickCard(idx, cardEl));
+      deckArea.appendChild(cardEl);
+    });
+
+    showScreen("pick");
+  }
+
+  function onPickCard(idx, el) {
+    if (state.picked.includes(idx)) return;
+    if (state.picked.length >= 3) return;
+    if (el.classList.contains("picked")) return;
+
+    state.picked.push(idx);
+    el.classList.add("picked");
+    updatePickCount();
+
+    if (state.picked.length === 3) {
+      // 약간의 딜레이 후 결과 화면 전환
+      setTimeout(() => goToResult(), 500);
+    }
+  }
+
+  function updatePickCount() {
+    $("#pick-count").textContent = state.picked.length;
+  }
+
+  // ============================================
+  // 8. SCREEN: RESULT
+  // ============================================
+  function goToResult() {
+    $("#question-echo-2").textContent = "Q. " + state.question;
+
+    // 결과 생성: 각 카드의 정/역방향 랜덤 결정
+    state.results = state.picked.map(idx => ({
+      card: state.shuffledDeck[idx],
+      isReversed: Math.random() < 0.5
+    }));
+
+    // 카드 3장 렌더링 (처음엔 뒷면)
+    const resultCards = $("#result-cards");
+    resultCards.innerHTML = "";
+
+    const cardEls = state.results.map((r, i) => {
+      const slot = document.createElement("div");
+      slot.className = "result-slot";
+
+      const label = document.createElement("div");
+      label.className = "position-label";
+      label.textContent = POSITIONS[i];
+
+      const cardEl = buildCardEl({
+        card: r.card,
+        isReversed: r.isReversed,
+        flipped: false
+      });
+
+      slot.appendChild(label);
+      slot.appendChild(cardEl);
+      resultCards.appendChild(slot);
+      return cardEl;
+    });
+
+    // 해석 영역 초기화 (보이지 않게)
+    const interpretList = $("#interpret-list");
+    interpretList.innerHTML = "";
+    state.results.forEach((r, i) => {
+      const card = r.card;
+      const isRev = r.isReversed;
+      const keywords = isRev ? card.reversed : card.upright;
+
+      const div = document.createElement("div");
+      div.className = "interpret-card";
+      div.innerHTML = `
+        <div class="pos">${POSITIONS[i]}</div>
+        <div class="card-name">${card.name} <span style="font-size:13px;color:var(--text-sub);font-weight:400;">(${card.nameEn})</span></div>
+        <div class="orient ${isRev ? "reversed" : "upright"}">${isRev ? "역방향" : "정방향"}</div>
+        <div class="keywords">${keywords}</div>
+      `;
+      interpretList.appendChild(div);
+    });
+
+    showScreen("result");
+
+    // 카드 순차적으로 뒤집기 + 해석 페이드인
+    cardEls.forEach((el, i) => {
+      setTimeout(() => {
+        el.classList.add("flipped");
+      }, 350 + i * 500);
+    });
+
+    const interpretEls = interpretList.querySelectorAll(".interpret-card");
+    interpretEls.forEach((el, i) => {
+      setTimeout(() => {
+        el.classList.add("visible");
+      }, 350 + cardEls.length * 500 + i * 250);
+    });
+  }
+
+  // ============================================
+  // 9. RESET
+  // ============================================
+  $("#btn-reset").addEventListener("click", () => {
+    state.question = "";
+    state.shuffledDeck = [];
+    state.picked = [];
+    state.results = [];
+    $("#question-input").value = "";
+    $("#deck-area").innerHTML = "";
+    $("#result-cards").innerHTML = "";
+    $("#interpret-list").innerHTML = "";
+    updatePickCount();
+    showScreen("intro");
+  });
+</script>
+</body>
+</html>
