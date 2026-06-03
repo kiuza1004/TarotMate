@@ -137,6 +137,58 @@
     color: rgba(185, 168, 212, 0.5);
   }
 
+  /* Deck mode selector */
+  .mode-select {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .mode-btn {
+    padding: 10px 4px 8px;
+    border: 1px solid var(--accent-gold-dim);
+    background: linear-gradient(180deg, rgba(60, 40, 18, 0.55), rgba(20, 12, 6, 0.7));
+    color: var(--accent-gold-light);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    line-height: 1.1;
+  }
+  .mode-btn:hover { border-color: var(--accent-gold); }
+  .mode-btn small {
+    display: block;
+    font-size: 9.5px;
+    opacity: 0.78;
+    margin-top: 3px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+  .mode-btn.active {
+    background: linear-gradient(180deg, var(--accent-gold-light) 0%, var(--accent-gold) 55%, var(--accent-gold-dim) 100%);
+    color: var(--parchment-ink);
+    border-color: var(--accent-gold-deep);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 250, 220, 0.9),
+      inset 0 -1px 0 rgba(90, 63, 18, 0.45),
+      0 2px 6px rgba(0, 0, 0, 0.45);
+    text-shadow: 0 1px 0 rgba(255, 245, 200, 0.6);
+  }
+  .mode-btn.active small { opacity: 0.95; }
+  .mode-desc {
+    font-size: 11.5px;
+    color: var(--text-sub);
+    line-height: 1.55;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border-left: 2px solid var(--accent-gold-dim);
+    border-radius: 4px;
+  }
+
   .btn {
     display: inline-flex;
     justify-content: center;
@@ -290,75 +342,43 @@
     50%      { opacity: 1;    transform: scale(1.04); filter: drop-shadow(0 0 6px rgba(184, 146, 72, 0.8)); }
   }
 
-  /* ===== Card Front (Luxury Rider-Waite, gold leaf bevel) ===== */
+  /* ===== Card Front (Classic Rider-Waite, clean white matte) ===== */
   .card-front {
-    background:
-      /* faint age-spotting kept for richness */
-      radial-gradient(circle at 18% 22%, rgba(40, 22, 8, 0.06) 0px, transparent 2px),
-      radial-gradient(circle at 78% 32%, rgba(40, 22, 8, 0.05) 0px, transparent 1.8px),
-      radial-gradient(circle at 28% 76%, rgba(40, 22, 8, 0.06) 0px, transparent 1.8px),
-      radial-gradient(circle at 72% 84%, rgba(40, 22, 8, 0.06) 0px, transparent 2px),
-      /* delicate craquelure for tactile luxury */
-      linear-gradient(118deg, transparent 49.6%, rgba(40, 22, 8, 0.10) 49.85%, transparent 50.1%),
-      linear-gradient(72deg,  transparent 49.5%, rgba(40, 22, 8, 0.07) 49.75%, transparent 49.95%),
-      linear-gradient(28deg,  transparent 49.6%, rgba(40, 22, 8, 0.06) 49.8%, transparent 50%),
-      /* gold filigree damask */
-      repeating-linear-gradient(45deg, rgba(164, 128, 30, 0.05) 0 1px, transparent 1px 12px),
-      repeating-linear-gradient(-45deg, rgba(164, 128, 30, 0.05) 0 1px, transparent 1px 12px),
-      /* luminous center sfumato */
-      radial-gradient(ellipse at 50% 40%, rgba(255, 245, 200, 0.35) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(40, 22, 8, 0.20) 100%),
-      /* RW-cream → saffron base */
-      linear-gradient(160deg, var(--card-face-1) 0%, var(--card-face-2) 60%, var(--card-face-3) 100%);
+    background: #fbf6e6;                /* clean ivory / aged-paper white */
     border: 1px solid var(--accent-gold-deep);
     transform: rotateY(180deg);
     color: var(--parchment-ink);
     box-shadow:
       var(--shadow-hard),
-      inset 0 0 0 2px var(--accent-gold-light),
-      inset 0 0 0 3px var(--accent-gold-dim),
-      inset 0 0 0 5px rgba(251, 242, 210, 0.85),
-      inset 0 0 0 6px var(--accent-gold-deep),
-      inset 0 0 36px rgba(60, 36, 10, 0.30);
+      inset 0 0 0 1px var(--accent-gold-light),
+      inset 0 0 0 2px var(--accent-gold-dim),
+      inset 0 0 0 3px #fbf6e6,
+      inset 0 0 0 4px var(--accent-gold-deep);
   }
-  /* inner gilt frame line */
+  /* inner hairline gilt frame */
   .card-front::before {
     content: "";
     position: absolute;
-    inset: 9px;
-    border: 1px solid var(--accent-gold-dim);
-    border-radius: 5px;
+    inset: 7px;
+    border: 0.5px solid var(--accent-gold-dim);
+    border-radius: 4px;
     pointer-events: none;
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 240, 195, 0.55),
-      0 0 0 1px rgba(90, 63, 18, 0.55);
   }
-  /* outermost hairline + subtle gold glow */
-  .card-front::after {
-    content: "";
-    position: absolute;
-    inset: 12px;
-    border: 0.5px solid rgba(216, 168, 74, 0.7);
-    border-radius: 3px;
-    pointer-events: none;
-    background:
-      linear-gradient(135deg, rgba(243, 220, 138, 0.08) 0%, transparent 30%, transparent 70%, rgba(243, 220, 138, 0.08) 100%);
-  }
+  .card-front::after { content: none; }
 
-  /* SVG corner cartouches (Florentine acanthus volute) */
+  /* SVG corner cartouches — tiny, discreet */
   .card-front .corn-orn {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
     z-index: 4;
     pointer-events: none;
-    opacity: 0.95;
-    filter: drop-shadow(0 0 1.2px rgba(46, 26, 14, 0.6));
+    opacity: 0.85;
   }
-  .card-front .corn-orn.tl { top: 4px;    left: 4px; }
-  .card-front .corn-orn.tr { top: 4px;    right: 4px;   transform: scaleX(-1); }
-  .card-front .corn-orn.bl { bottom: 4px; left: 4px;    transform: scaleY(-1); }
-  .card-front .corn-orn.br { bottom: 4px; right: 4px;   transform: scale(-1, -1); }
+  .card-front .corn-orn.tl { top: 3px;    left: 3px; }
+  .card-front .corn-orn.tr { top: 3px;    right: 3px;   transform: scaleX(-1); }
+  .card-front .corn-orn.bl { bottom: 3px; left: 3px;    transform: scaleY(-1); }
+  .card-front .corn-orn.br { bottom: 3px; right: 3px;   transform: scale(-1, -1); }
 
   .card-front-content {
     position: absolute;
@@ -374,104 +394,92 @@
     transform: rotate(180deg);
   }
 
-  /* Roman numeral top cartouche — engraved gold plaque */
+  /* Roman numeral — classic RW top label, clean caps */
   .card-front .num-banner {
     position: relative;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.28em;
-    color: var(--accent-gold-deep);
-    text-shadow:
-      0 1px 0 rgba(255, 245, 200, 0.9),
-      0 -0.5px 0 rgba(60, 36, 10, 0.35);
-    padding: 3px 22px;
-    background:
-      linear-gradient(180deg, #fff4c6 0%, #f1d878 50%, #c69c3a 100%);
-    border-top: 1px solid var(--accent-gold-dim);
-    border-bottom: 1px solid var(--accent-gold-deep);
-    border-left: 1px solid rgba(216, 168, 74, 0.6);
-    border-right: 1px solid rgba(216, 168, 74, 0.6);
-    border-radius: 2px;
-    min-width: 40px;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 250, 220, 0.9),
-      inset 0 -1px 0 rgba(90, 63, 18, 0.4),
-      0 1px 2px rgba(60, 36, 10, 0.45);
+    font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: #1a0f06;
+    padding: 1px 14px 2px;
+    background: transparent;
+    border: none;
+    min-width: 28px;
   }
   .card-front .num-banner::before,
   .card-front .num-banner::after {
-    content: "✦";
-    font-size: 6px;
-    color: var(--accent-gold-deep);
+    content: "";
     position: absolute;
     top: 50%;
+    width: 6px;
+    height: 0.5px;
+    background: #1a0f06;
     transform: translateY(-50%);
-    opacity: 0.85;
+    opacity: 0.6;
   }
-  .card-front .num-banner::before { left: 5px; }
-  .card-front .num-banner::after  { right: 5px; }
+  .card-front .num-banner::before { left: -2px; }
+  .card-front .num-banner::after  { right: -2px; }
 
-  /* Scene SVG panel */
+  /* Scene SVG panel — framed in a clean off-white matte */
   .scene {
     position: relative;
     flex: 1;
     width: 100%;
     display: flex;
-    margin: 4px 0;
+    margin: 5px 0 6px;
+    padding: 2px;
+    background: #fbf6e6;
+    border: 0.5px solid #1a0f06;
+    box-shadow:
+      0 0 0 1px #fbf6e6,
+      0 0 0 1.5px rgba(140, 100, 30, 0.6),
+      0 1px 2px rgba(0, 0, 0, 0.18);
+    border-radius: 1px;
   }
   .scene-svg {
     width: 100%;
     height: 100%;
     display: block;
-    border-radius: 3px;
-    box-shadow:
-      inset 0 0 0 0.5px rgba(110, 85, 32, 0.65),
-      0 1px 3px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
   }
 
-  /* Name banner — engraved gold cartouche */
+  /* Name banner — classic RW caps under illustration */
   .card-front .name-banner {
     position: relative;
     width: 100%;
-    padding: 4px 16px 5px;
-    background:
-      linear-gradient(180deg, #fff4c6 0%, #f1d878 50%, #c69c3a 100%);
-    border-top: 1px solid var(--accent-gold-dim);
-    border-bottom: 1px solid var(--accent-gold-deep);
-    border-radius: 2px;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 250, 220, 0.9),
-      inset 0 -1px 0 rgba(90, 63, 18, 0.45),
-      0 1px 2px rgba(60, 36, 10, 0.45);
+    padding: 3px 8px 4px;
+    background: transparent;
+    border: none;
+    border-top: 0.5px solid rgba(26, 15, 6, 0.4);
+    border-bottom: 0.5px solid rgba(26, 15, 6, 0.4);
+    border-radius: 0;
   }
   .card-front .name-banner::before,
   .card-front .name-banner::after {
-    content: "✦";
-    font-size: 6px;
-    color: var(--accent-gold-deep);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.85;
+    content: none;
   }
-  .card-front .name-banner::before { left: 5px; }
-  .card-front .name-banner::after  { right: 5px; }
+  .card-front .name-banner::before { display: none; }
+  .card-front .name-banner::after  { display: none; }
   .card-front .name {
+    font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
     font-size: 11px;
-    font-weight: 800;
-    line-height: 1.15;
-    color: var(--parchment-ink);
-    letter-spacing: 0.06em;
+    font-weight: 700;
+    line-height: 1.18;
+    color: #1a0f06;
+    letter-spacing: 0.08em;
     word-break: keep-all;
-    text-shadow: 0 1px 0 rgba(255, 245, 200, 0.7);
+    text-transform: none;
   }
   .card-front .name-en {
     font-size: 7px;
-    font-style: italic;
-    color: var(--accent-gold-deep);
+    font-weight: 600;
+    font-style: normal;
+    color: #1a0f06;
     margin-top: 1px;
-    letter-spacing: 0.12em;
-    opacity: 0.95;
+    letter-spacing: 0.22em;
+    opacity: 0.7;
+    text-transform: uppercase;
   }
 
   /* Deck card states */
@@ -715,9 +723,9 @@
       <stop offset="1" stop-color="#d8b888"/>
     </linearGradient>
     <linearGradient id="skyDay" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f6c84a"/>
-      <stop offset="0.5" stop-color="#fadf7a"/>
-      <stop offset="1" stop-color="#fdf1c2"/>
+      <stop offset="0" stop-color="#f4c528"/>
+      <stop offset="0.6" stop-color="#f7d553"/>
+      <stop offset="1" stop-color="#fde58f"/>
     </linearGradient>
     <linearGradient id="skyTwilight" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#1a1428"/>
@@ -842,6 +850,50 @@
         <circle r="1" fill="#ede0c4"/>
       </g>
     </symbol>
+
+    <!-- ===== Minor Arcana suit emblems ===== -->
+    <symbol id="emblemWand" viewBox="-10 -16 20 32">
+      <line x1="0" y1="14" x2="0" y2="-10" stroke="#7a4818" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="0" y1="12" x2="0" y2="-8" stroke="#a87038" stroke-width="0.6" opacity="0.7"/>
+      <g transform="translate(0 -11)">
+        <path d="M-3 0 Q -5 -3 -2 -5 Q 0 -4 -1 0 Z" fill="#3c7028" stroke="#1b3010" stroke-width="0.3"/>
+        <path d="M3 0 Q 5 -3 2 -5 Q 0 -4 1 0 Z" fill="#3c7028" stroke="#1b3010" stroke-width="0.3"/>
+        <ellipse cx="0" cy="-3" rx="1.6" ry="3" fill="#5a8838"/>
+        <circle cx="0" cy="-4" r="0.7" fill="#f3dc8a"/>
+      </g>
+      <g transform="translate(0 13)" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3">
+        <ellipse cx="0" cy="0" rx="3.2" ry="1.5"/>
+      </g>
+    </symbol>
+
+    <symbol id="emblemCup" viewBox="-10 -14 20 28">
+      <ellipse cx="0" cy="-7" rx="6.5" ry="1.6" fill="#3a5ea8"/>
+      <path d="M-6.5 -7 Q -7 4 0 5.5 Q 7 4 6.5 -7 Z" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.4"/>
+      <path d="M-5 -7 Q -5 2 0 3.5 Q 5 2 5 -7" fill="none" stroke="#fff4c4" stroke-width="0.3" opacity="0.6"/>
+      <rect x="-1.5" y="5.5" width="3" height="2.2" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+      <ellipse cx="0" cy="8.5" rx="4.5" ry="1.6" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+      <ellipse cx="0" cy="9.4" rx="3.8" ry="0.7" fill="#5a3812" opacity="0.4"/>
+      <path d="M-2 -3 Q 0 -2 2 -3 Q 1 0 0 0.5 Q -1 0 -2 -3 Z" fill="#d94228" stroke="#5a1410" stroke-width="0.25"/>
+    </symbol>
+
+    <symbol id="emblemSword" viewBox="-6 -16 12 32">
+      <path d="M-0.9 -14 L0.9 -14 L0.9 10 L-0.9 10 Z" fill="#dcdcd4" stroke="#3a3a40" stroke-width="0.3"/>
+      <line x1="0" y1="-14" x2="0" y2="10" stroke="#7a8090" stroke-width="0.4" opacity="0.7"/>
+      <path d="M-1 -14 L0 -16 L1 -14 Z" fill="#f4f0e8" stroke="#3a3a40" stroke-width="0.3"/>
+      <rect x="-4" y="10" width="8" height="1.5" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+      <rect x="-0.6" y="11.5" width="1.2" height="2" fill="url(#goldVert)"/>
+      <circle cx="0" cy="14" r="1.6" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+    </symbol>
+
+    <symbol id="emblemPent" viewBox="-10 -10 20 20">
+      <circle cx="0" cy="0" r="8.5" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.5"/>
+      <circle cx="0" cy="0" r="8.5" fill="none" stroke="#fff4c4" stroke-width="0.35" opacity="0.65"/>
+      <circle cx="0" cy="0" r="7" fill="none" stroke="#5a3812" stroke-width="0.3" opacity="0.7"/>
+      <path d="M0 -6 L1.8 -1.9 L6.2 -1.9 L2.7 0.7 L4.1 5 L0 2.3 L-4.1 5 L-2.7 0.7 L-6.2 -1.9 L-1.8 -1.9 Z"
+            fill="none" stroke="#5a3812" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M0 -6 L1.8 -1.9 L6.2 -1.9 L2.7 0.7 L4.1 5 L0 2.3 L-4.1 5 L-2.7 0.7 L-6.2 -1.9 L-1.8 -1.9 Z"
+            fill="none" stroke="#fff4c4" stroke-width="0.25" opacity="0.6" stroke-linejoin="round"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -859,6 +911,18 @@
         id="question-input"
         placeholder="예) 이번 달 나의 연애운은 어떨까요?"
         maxlength="200"></textarea>
+
+      <div>
+        <label style="display:block;margin-bottom:6px;">덱 선택</label>
+        <div class="mode-select" id="mode-select">
+          <button type="button" class="mode-btn active" data-mode="major">메이저<small>22장</small></button>
+          <button type="button" class="mode-btn" data-mode="minor">마이너<small>56장</small></button>
+          <button type="button" class="mode-btn" data-mode="all">전체<small>78장</small></button>
+        </div>
+        <div class="mode-desc" id="mode-desc">
+          <strong>메이저 아르카나</strong> — 인생의 큰 흐름과 운명의 굵직한 줄기를 비춥니다.
+        </div>
+      </div>
     </div>
     <button class="btn btn-primary" id="btn-start">타로 리딩 시작</button>
   </section>
@@ -1121,6 +1185,122 @@
     }
   ];
 
+  // ============================================
+  // 1b. MINOR ARCANA (56 cards = 4 suits × 14 ranks)
+  // ============================================
+  const MINOR_SUITS = [
+    { id: "w", kor: "완드",   en: "Wands",     glyph: "♣", el: "불"   },
+    { id: "c", kor: "컵",     en: "Cups",      glyph: "♥", el: "물"   },
+    { id: "s", kor: "검",     en: "Swords",    glyph: "♠", el: "바람" },
+    { id: "p", kor: "펜타클", en: "Pentacles", glyph: "♦", el: "땅"   }
+  ];
+
+  const MINOR_RANKS = [
+    { id: "A",  kor: "에이스", en: "Ace",    label: "I"      },
+    { id: "2",  kor: "2",      en: "Two",    label: "II"     },
+    { id: "3",  kor: "3",      en: "Three",  label: "III"    },
+    { id: "4",  kor: "4",      en: "Four",   label: "IV"     },
+    { id: "5",  kor: "5",      en: "Five",   label: "V"      },
+    { id: "6",  kor: "6",      en: "Six",    label: "VI"     },
+    { id: "7",  kor: "7",      en: "Seven",  label: "VII"    },
+    { id: "8",  kor: "8",      en: "Eight",  label: "VIII"   },
+    { id: "9",  kor: "9",      en: "Nine",   label: "IX"     },
+    { id: "10", kor: "10",     en: "Ten",    label: "X"      },
+    { id: "P",  kor: "시종",   en: "Page",   label: "PAGE"   },
+    { id: "N",  kor: "기사",   en: "Knight", label: "KNIGHT" },
+    { id: "Q",  kor: "여왕",   en: "Queen",  label: "QUEEN"  },
+    { id: "K",  kor: "왕",     en: "King",   label: "KING"   }
+  ];
+
+  const MINOR_INTERP = {
+    w: {
+      A:  ["새로운 시작의 불꽃, 영감의 점화",        "마음에 새 불씨가 일었습니다. 망설이지 말고 첫 발을 내디뎌 보세요."],
+      "2":["계획과 선택, 더 넓은 세계의 부름",       "한 손엔 지구본, 한 손엔 지팡이. 익숙한 항구를 떠날 때입니다."],
+      "3":["기다림과 비전 확장, 결실의 예감",        "심어둔 씨앗이 자라고 있습니다. 멀리 수평선을 바라보세요."],
+      "4":["축하와 안정된 토대, 가정의 평화",        "노력의 첫 결실이 도착했습니다. 잠시 멈춰 충분히 기뻐하세요."],
+      "5":["경쟁과 충돌, 다툼 속의 열기",           "서로 다른 의지가 부딪힙니다. 갈등 안에서 배울 것을 찾아내세요."],
+      "6":["승리의 행진, 인정과 박수",              "오랜 노력이 마침내 인정받습니다. 자랑스럽게 머리를 드세요."],
+      "7":["우위 사수, 흔들리지 않는 입장",          "높은 자리에서 자신을 지키세요. 신념을 양보하지 마십시오."],
+      "8":["빠른 전개와 메시지, 속도",              "정체되었던 것이 한꺼번에 풀립니다. 흐름의 속도에 올라타세요."],
+      "9":["마지막 시험, 끈기와 경계",              "마지막 한 고비를 앞두고 있습니다. 지금까지 버텨온 힘을 믿으세요."],
+      "10":["짐과 책임, 무거운 어깨",               "너무 많은 것을 혼자 끌어안고 있습니다. 일부는 내려놓아야 합니다."],
+      P:  ["호기심 많은 탐험가, 새 소식의 사자",      "흥미진진한 소식이 도착합니다. 호기심을 따라가 보세요."],
+      N:  ["돌진하는 추진력, 모험과 열정",          "주저 없이 달려나갈 때입니다. 다만 방향만 잃지 마세요."],
+      Q:  ["당당한 카리스마, 따뜻한 영향력",          "당신의 빛이 주변을 끌어당깁니다. 자신감을 가지고 빛나세요."],
+      K:  ["비전 있는 통솔, 큰 그림의 리더",         "큰 흐름을 읽고 사람들을 이끄세요. 결단이 모두를 움직입니다."]
+    },
+    c: {
+      A:  ["감정의 새 출발, 사랑의 잔이 넘침",        "마음의 잔이 차오릅니다. 새로운 감정을 두려워 말고 받으세요."],
+      "2":["조화로운 결합, 서로를 비추는 두 사람",     "두 마음이 정직하게 마주합니다. 진심을 건네야 진심이 돌아옵니다."],
+      "3":["기쁨의 축배, 함께하는 축하",             "기쁜 일이 모두와 나눠집니다. 좋은 사람들 곁에 머무세요."],
+      "4":["권태와 무관심, 보이지 않는 새 잔",        "익숙함에 가려진 새 기회를 놓치고 있습니다. 시선을 들어 올리세요."],
+      "5":["상실과 후회, 남은 두 잔의 가능성",        "쏟아진 잔 너머에 아직 남은 두 잔이 있습니다. 슬픔에만 머물지 마세요."],
+      "6":["향수와 순수, 옛 인연의 재회",            "그리운 얼굴이 떠오릅니다. 잊고 있던 따뜻함이 돌아옵니다."],
+      "7":["환상과 망설임, 너무 많은 선택지",         "안개 속에 여러 길이 보입니다. 진짜 원하는 것 하나만 골라내세요."],
+      "8":["떠남과 새로운 탐색, 미련 없는 발걸음",     "쌓아온 것 너머 더 깊은 부름이 있다면 떠나야 할 때입니다."],
+      "9":["만족과 소원 성취, 풍요로운 마음",         "원했던 것이 이뤄집니다. 가슴이 충만한 시기입니다."],
+      "10":["가족의 완성, 무지개 같은 정서적 충만",   "사랑하는 이들과 따뜻한 시간을 누리세요. 행복의 정점입니다."],
+      P:  ["감수성 풍부한 전령, 마음의 새 소식",      "예감 같은 메시지가 다가옵니다. 직관을 신뢰하세요."],
+      N:  ["로맨틱한 제안, 마음을 건네는 기사",       "정중한 마음의 선물이 도착합니다. 진심을 알아봐 주세요."],
+      Q:  ["깊은 공감, 정서적 지혜의 여왕",           "당신의 따뜻함이 누군가를 살립니다. 자신도 같이 보살피세요."],
+      K:  ["차분한 성숙, 감정을 다스리는 왕",         "감정의 폭풍 위에서도 흔들리지 않습니다. 평정심이 답입니다."]
+    },
+    s: {
+      A:  ["진실의 검, 명료한 통찰의 시작",          "안개가 걷히고 진실이 드러납니다. 정직한 칼을 들 시간입니다."],
+      "2":["눈가린 균형, 결정 회피",                "결정을 미루며 균형만 잡고 있습니다. 눈가리개를 풀어야 답이 보입니다."],
+      "3":["마음의 상처, 슬픔과 정화",              "심장을 관통하는 슬픔이 있습니다. 그러나 비가 그치면 정화가 옵니다."],
+      "4":["회복과 휴식, 침묵의 시간",              "잠시 검을 내려놓고 쉬어야 합니다. 정적 속에 회복이 있습니다."],
+      "5":["갈등 후 잔해, 공허한 승리",              "이긴 것 같지만 잃은 것이 많습니다. 무엇을 위해 싸웠는지 돌아보세요."],
+      "6":["떠남과 전환, 더 잔잔한 물길로",          "지친 자리를 떠나 새로운 강으로 향합니다. 떠나는 것이 답일 때가 있습니다."],
+      "7":["속임수와 전략, 조용한 후퇴",            "정면 충돌 대신 영리한 우회를 택할 때입니다. 자기 자신은 속이지 마세요."],
+      "8":["스스로 만든 속박, 보이지 않는 출구",      "묶여 있다고 믿는 사슬은 자신이 만든 것입니다. 눈을 들면 길이 보입니다."],
+      "9":["불안과 악몽, 새벽의 두려움",             "걱정이 잠을 빼앗고 있습니다. 대부분은 머릿속에서 만든 그림자입니다."],
+      "10":["바닥, 그러나 새벽이 다가옴",            "더는 잃을 것이 없는 자리입니다. 여기서부터는 오직 일어서는 길뿐입니다."],
+      P:  ["호기심 많은 관찰자, 진실을 찾는 전령",     "진실을 캐는 눈이 필요합니다. 다만 성급하게 휘두르지 마세요."],
+      N:  ["저돌적인 돌진, 빠른 판단의 기사",         "신속한 행동이 필요합니다. 다만 방향을 두 번 확인하세요."],
+      Q:  ["냉정한 명료함, 경계를 짓는 여왕",         "감정에 휘둘리지 않는 판단이 필요합니다. 단호함이 곧 자비입니다."],
+      K:  ["원칙과 지성, 진실을 집행하는 왕",         "원칙으로 결정을 내릴 때입니다. 사사로움을 끊어내세요."]
+    },
+    p: {
+      A:  ["새 기회의 씨앗, 풍요의 시작",            "단단한 기회가 손에 쥐어집니다. 이 씨앗을 잘 심어 키우세요."],
+      "2":["저글링과 균형, 두 가지 일의 조율",        "두 공을 동시에 던지며 균형을 잡고 있습니다. 리듬을 잃지 마세요."],
+      "3":["협업의 결실, 인정받는 솜씨",             "당신의 솜씨가 인정받습니다. 동료와 함께할 때 더 단단해집니다."],
+      "4":["축적과 집착, 움켜쥔 손",                "가진 것을 너무 꽉 쥐고 있습니다. 흘려보내야 새것이 들어옵니다."],
+      "5":["결핍과 외로움, 차가운 문 앞",            "어려운 시기지만 도움의 문은 늘 곁에 있습니다. 도움을 청하세요."],
+      "6":["나눔과 공정, 들고 나가는 균형",          "주고받음의 균형이 회복됩니다. 베푼 것이 돌아옵니다."],
+      "7":["기다림과 평가, 수확 전 점검",            "거두기 전 잠시 멈춰 평가할 때입니다. 무엇이 더 자랄지 보세요."],
+      "8":["꾸준한 단련, 장인의 집중",              "한 가지 일에 정성껏 매달리세요. 반복이 곧 완성입니다."],
+      "9":["자기 결실의 여유, 우아한 독립",           "스스로 가꾼 정원에 서 있습니다. 노력의 풍요를 누리세요."],
+      "10":["대물림의 풍요, 안정된 토대",            "가족과 시간의 토대 위에 진짜 풍요가 있습니다. 뿌리가 든든합니다."],
+      P:  ["배움의 열의, 견고한 첫 발자국",          "새로운 분야를 진지하게 배울 때입니다. 기초가 미래가 됩니다."],
+      N:  ["성실한 진척, 꾸준한 기사",              "화려하지 않아도 한 걸음씩 나아갑니다. 지구력이 답입니다."],
+      Q:  ["풍요로운 안주인, 실질적 보살핌",          "자신과 주변을 풍요롭게 가꾸세요. 안정된 손이 곧 영향력입니다."],
+      K:  ["풍요로운 통치, 견고한 부의 왕",          "쌓아온 것 위에서 너그럽게 베푸세요. 풍요는 흘려보낼 때 더 커집니다."]
+    }
+  };
+
+  // Generate and append 56 minor entries
+  (function appendMinorArcana() {
+    let n = 22;
+    for (const suit of MINOR_SUITS) {
+      for (const rank of MINOR_RANKS) {
+        const [up, story] = MINOR_INTERP[suit.id][rank.id];
+        TAROT_DECK.push({
+          num: n++,
+          suit: suit.id,
+          rank: rank.id,
+          name: `${suit.kor}의 ${rank.kor}`,
+          nameEn: `${rank.en} of ${suit.en}`,
+          symbol: suit.glyph,
+          upright: up,
+          reversed: "",
+          uprightStory: story,
+          reversedStory: ""
+        });
+      }
+    }
+  })();
+
   const POSITIONS = ["과거", "현재", "미래"];
 
   const POSITION_LEADS = {
@@ -1150,10 +1330,20 @@
   // ============================================
   const state = {
     question: "",
+    mode: "major",          // "major" | "minor" | "all"
     shuffledDeck: [],
     picked: [],
     results: []
   };
+
+  function getActiveDeck() {
+    switch (state.mode) {
+      case "minor": return TAROT_DECK.filter(c => c.suit);
+      case "all":   return TAROT_DECK.slice();
+      case "major":
+      default:      return TAROT_DECK.filter(c => !c.suit);
+    }
+  }
 
   // ============================================
   // 3. DOM REFERENCES
@@ -1242,62 +1432,121 @@
   </g>
 </svg>`,
 
-    // ========== 1. THE MAGICIAN — altar with 4 suits, lemniscate, rose garden ==========
+    // ========== 1. THE MAGICIAN — saffron sky, lemniscate, 4-suit altar, rose & lily garden ==========
     1: `
 <svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
-  <rect width="100" height="140" fill="url(#skyTwilight)"/>
-  <rect x="0" y="100" width="100" height="40" fill="url(#earthFill)"/>
-  <g opacity="0.9">
-    <circle cx="14" cy="118" r="2" fill="#9a3a2a"/><circle cx="26" cy="124" r="1.7" fill="#9a3a2a"/>
-    <circle cx="74" cy="120" r="2" fill="#9a3a2a"/><circle cx="86" cy="124" r="1.7" fill="#9a3a2a"/>
-    <circle cx="20" cy="130" r="2" fill="#ede0a8"/><circle cx="80" cy="130" r="2" fill="#ede0a8"/>
-    <circle cx="14" cy="118" r="0.8" fill="#ede0a8"/><circle cx="74" cy="120" r="0.8" fill="#ede0a8"/>
-    <path d="M10 122 L14 118 L18 122 M22 128 L26 124 L30 128" stroke="#5a7048" stroke-width="0.5" fill="none"/>
-    <path d="M70 124 L74 120 L78 124 M82 128 L86 124 L90 128" stroke="#5a7048" stroke-width="0.5" fill="none"/>
+  <rect width="100" height="140" fill="url(#skyDay)"/>
+  <rect x="0" y="96" width="100" height="44" fill="#3f7a3a"/>
+  <path d="M0 96 Q 25 92 50 96 T 100 96 L100 102 L0 102 Z" fill="#2f5a2a" opacity="0.6"/>
+  <g stroke="#1a3a18" stroke-width="0.4" fill="none" opacity="0.55">
+    <path d="M0 110 Q 25 108 50 110 T 100 110"/>
+    <path d="M0 122 Q 25 120 50 122 T 100 122"/>
   </g>
-  <circle cx="50" cy="22" r="11" fill="url(#sunGlow)" opacity="0.4"/>
-  <path d="M40 22 Q 32 16 32 22 Q 32 28 40 22 Q 48 16 48 22 Q 48 28 40 22 Z" fill="none" stroke="url(#goldHoriz)" stroke-width="1.3"/>
-  <path d="M52 22 Q 44 16 44 22 Q 44 28 52 22 Q 60 16 60 22 Q 60 28 52 22 Z" fill="none" stroke="url(#goldHoriz)" stroke-width="1.3"/>
-  <g transform="translate(50 60)">
-    <circle cx="0" cy="-22" r="4.5" fill="#f5d8b4"/>
-    <path d="M-4 -25 Q 0 -28 4 -25 L 4 -20 L -4 -20 Z" fill="#3a2818"/>
-    <path d="M-7 -16 L7 -16 L9 28 L-9 28 Z" fill="#ede0a8"/>
-    <path d="M-9 4 L9 4 L9 6 L-9 6 Z" fill="url(#goldHoriz)"/>
-    <circle cx="0" cy="5" r="1.5" fill="#5a7048"/>
-    <circle cx="0" cy="5" r="0.6" fill="#1a3a18"/>
-    <path d="M-10 -14 L-14 30 L-9 30 L-9 -14 Z" fill="url(#robeRed)"/>
-    <path d="M10 -14 L14 30 L9 30 L9 -14 Z" fill="url(#robeRed)"/>
-    <path d="M7 -14 L18 -36" stroke="#f5d8b4" stroke-width="2" stroke-linecap="round"/>
-    <line x1="17" y1="-34" x2="22" y2="-50" stroke="url(#goldVert)" stroke-width="1.4"/>
-    <circle cx="22" cy="-50" r="2" fill="#ede0a8"/>
-    <circle cx="22" cy="-50" r="0.9" fill="#c89a4a"/>
-    <path d="M-7 -10 L-12 4" stroke="#f5d8b4" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="-12" cy="5" r="1" fill="#f5d8b4"/>
+  <g transform="translate(50 18)">
+    <path d="M-8 0 Q -8 -5 -4 -5 Q 0 -5 0 0 Q 0 5 4 5 Q 8 5 8 0 Q 8 -5 4 -5 Q 0 -5 0 0 Q 0 5 -4 5 Q -8 5 -8 0 Z"
+      fill="none" stroke="#c8941a" stroke-width="1.3" stroke-linejoin="round"/>
+    <path d="M-8 0 Q -8 -5 -4 -5 Q 0 -5 0 0 Q 0 5 4 5 Q 8 5 8 0 Q 8 -5 4 -5 Q 0 -5 0 0 Q 0 5 -4 5 Q -8 5 -8 0 Z"
+      fill="none" stroke="#fde58f" stroke-width="0.4"/>
   </g>
-  <rect x="20" y="78" width="60" height="6" fill="url(#goldHoriz)"/>
-  <rect x="20" y="78" width="60" height="6" fill="none" stroke="#6a4828" stroke-width="0.5"/>
-  <rect x="18" y="84" width="64" height="2" fill="#6a4828" opacity="0.7"/>
-  <g transform="translate(28 75)">
-    <path d="M-2 -3 L2 -3 L1.5 1 L-1.5 1 Z" fill="url(#goldVert)" stroke="#6a4828" stroke-width="0.2"/>
-    <line x1="0" y1="1" x2="0" y2="3" stroke="#7e5a2a" stroke-width="0.6"/>
-    <ellipse cx="0" cy="3" rx="1.5" ry="0.4" fill="#7e5a2a"/>
+  <g transform="translate(50 64)">
+    <ellipse cx="0" cy="32" rx="22" ry="3" fill="#1a0f06" opacity="0.25"/>
+    <path d="M-9 -14 L9 -14 L11 28 L-11 28 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M-11 28 L11 28 L13 32 L-13 32 Z" fill="#f0e4be" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-13 -16 L-9 -14 L9 -14 L13 -16 L13 -10 L-13 -10 Z" fill="url(#robeRed)" stroke="#5a1818" stroke-width="0.5"/>
+    <path d="M-13 -16 Q -22 -12 -24 0 L -16 -2 Z" fill="url(#robeRed)" stroke="#5a1818" stroke-width="0.5"/>
+    <path d="M13 -16 Q 22 -12 24 0 L 16 -2 Z" fill="url(#robeRed)" stroke="#5a1818" stroke-width="0.5"/>
+    <path d="M-13 -8 Q -3 -6 0 -6 Q 3 -6 13 -8 L 11 28 L -11 28 Z" fill="url(#robeRed)" stroke="#5a1818" stroke-width="0.5"/>
+    <path d="M-9 -14 Q 0 -10 9 -14 L 7 -8 Q 0 -5 -7 -8 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.4"/>
+    <circle cx="0" cy="-22" r="5" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M-5 -25 Q 0 -29 5 -25 L 5 -20 Q 4 -22 0 -22 Q -4 -22 -5 -20 Z" fill="#3a2818"/>
+    <circle cx="-1.6" cy="-22" r="0.4" fill="#1a0f06"/>
+    <circle cx="1.6" cy="-22" r="0.4" fill="#1a0f06"/>
+    <path d="M-2 -19 Q 0 -18 2 -19" fill="none" stroke="#7a3a28" stroke-width="0.3"/>
+    <path d="M-9 -10 Q -16 -28 -8 -42" fill="none" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M-9 -10 Q -16 -28 -8 -42 L -6 -42 Q -14 -28 -7 -10 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-8 -42 Q -8 -46 -4 -46 Q 0 -46 -4 -42" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <line x1="-6" y1="-44" x2="-2" y2="-58" stroke="#fbf6e6" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="-6" y1="-44" x2="-2" y2="-58" stroke="#1a0f06" stroke-width="0.3" stroke-linecap="round"/>
+    <circle cx="-2.5" cy="-58.5" r="1.2" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M9 -8 Q 14 0 12 14" fill="none" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M9 -8 Q 14 0 12 14 L 14 14 Q 16 0 11 -8 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M12 14 Q 14 18 12 20 Q 10 18 10 14 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-11 4 Q 0 6 11 4 Q 12 8 11 9 Q 0 11 -11 9 Q -12 8 -11 4 Z" fill="#c8941a" stroke="#1a0f06" stroke-width="0.4"/>
+    <circle cx="0" cy="6.5" r="0.7" fill="#1a0f06"/>
+    <circle cx="-5" cy="6.5" r="0.5" fill="#1a0f06"/>
+    <circle cx="5" cy="6.5" r="0.5" fill="#1a0f06"/>
+    <path d="M11 9 Q 13 11 11 13" fill="none" stroke="#1a0f06" stroke-width="0.4"/>
   </g>
-  <g transform="translate(42 75)">
-    <circle cx="0" cy="-1" r="2.6" fill="url(#goldVert)" stroke="#6a4828" stroke-width="0.3"/>
-    <path d="M0 -3 L0.6 -1.4 L2.3 -1.4 L0.9 -0.4 L1.5 1.2 L0 0.2 L-1.5 1.2 L-0.9 -0.4 L-2.3 -1.4 L-0.6 -1.4 Z" fill="#ede0a8" stroke="#6a4828" stroke-width="0.2"/>
+  <g>
+    <rect x="22" y="78" width="56" height="14" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.6"/>
+    <rect x="22" y="78" width="56" height="3" fill="#e4d2a0" stroke="#1a0f06" stroke-width="0.4"/>
+    <rect x="20" y="76" width="60" height="3" fill="#c8941a" stroke="#1a0f06" stroke-width="0.5"/>
   </g>
-  <g transform="translate(58 75)">
-    <line x1="0" y1="-5" x2="0" y2="2" stroke="url(#goldVert)" stroke-width="1.4"/>
-    <path d="M-2 1.5 L2 1.5 L2 2.5 L-2 2.5 Z" fill="#7e5a2a"/>
-    <circle cx="0" cy="3.5" r="0.6" fill="#c89a4a"/>
-    <path d="M-0.6 -5 L0.6 -5 L0 -6.5 Z" fill="#ede0a8"/>
+  <g transform="translate(30 73)">
+    <path d="M-3 -3 Q -3 1 0 2 Q 3 1 3 -3 L 3 -4 L -3 -4 Z" fill="#c8941a" stroke="#1a0f06" stroke-width="0.5"/>
+    <ellipse cx="0" cy="-4" rx="3" ry="0.8" fill="#fde58f" stroke="#1a0f06" stroke-width="0.4"/>
+    <line x1="0" y1="2" x2="0" y2="4" stroke="#1a0f06" stroke-width="0.5"/>
+    <ellipse cx="0" cy="4.2" rx="2" ry="0.5" fill="#c8941a" stroke="#1a0f06" stroke-width="0.4"/>
   </g>
-  <g transform="translate(72 75)">
-    <line x1="0" y1="-4" x2="0" y2="3" stroke="#7a5828" stroke-width="1"/>
-    <circle cx="0" cy="-4" r="1" fill="#5a7048"/>
-    <circle cx="-1" cy="-3" r="0.6" fill="#5a7048"/>
-    <circle cx="1" cy="-3" r="0.6" fill="#5a7048"/>
-    <circle cx="0" cy="3" r="0.6" fill="#5a7048"/>
+  <g transform="translate(44 72)">
+    <circle cx="0" cy="0" r="3.2" fill="#fde58f" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M0 -2.8 L0.7 -0.9 L2.7 -0.9 L1.1 0.3 L1.7 2.2 L0 1 L-1.7 2.2 L-1.1 0.3 L-2.7 -0.9 L-0.7 -0.9 Z"
+      fill="none" stroke="#1a0f06" stroke-width="0.4"/>
+  </g>
+  <g transform="translate(58 72)">
+    <path d="M-0.8 -6 L0.8 -6 L0 -8 Z" fill="#c8c8c8" stroke="#1a0f06" stroke-width="0.4"/>
+    <line x1="0" y1="-6" x2="0" y2="3" stroke="#c8c8c8" stroke-width="1.4"/>
+    <line x1="0" y1="-6" x2="0" y2="3" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-3 3 L3 3 L3 4 L-3 4 Z" fill="#c8941a" stroke="#1a0f06" stroke-width="0.4"/>
+    <circle cx="0" cy="5" r="0.7" fill="#c8941a" stroke="#1a0f06" stroke-width="0.3"/>
+  </g>
+  <g transform="translate(72 72)">
+    <line x1="0" y1="3" x2="0" y2="-5" stroke="#6a3818" stroke-width="0.8"/>
+    <path d="M-1.8 -5 Q 0 -8 1.8 -5 Q 0 -3 -1.8 -5 Z" fill="#7a4828" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-2 -3 Q -4 -2 -3 0" fill="none" stroke="#3f7a3a" stroke-width="0.5"/>
+    <path d="M2 -3 Q 4 -2 3 0" fill="none" stroke="#3f7a3a" stroke-width="0.5"/>
+    <ellipse cx="-2" cy="-3" rx="1.5" ry="0.6" fill="#3f7a3a" transform="rotate(-30 -2 -3)" stroke="#1a0f06" stroke-width="0.2"/>
+    <ellipse cx="2" cy="-3" rx="1.5" ry="0.6" fill="#3f7a3a" transform="rotate(30 2 -3)" stroke="#1a0f06" stroke-width="0.2"/>
+    <ellipse cx="0" cy="3.5" rx="2" ry="0.6" fill="#5a3818"/>
+  </g>
+  <g>
+    <g transform="translate(14 116)">
+      <circle cx="0" cy="0" r="2.2" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+      <circle cx="0" cy="0" r="0.8" fill="#fde58f"/>
+      <path d="M-2 -1 Q 0 -2.5 2 -1" fill="none" stroke="#5a1818" stroke-width="0.3"/>
+      <path d="M0 2 L-1 6 L1 6 Z" fill="#3f7a3a"/>
+    </g>
+    <g transform="translate(28 124)">
+      <circle cx="0" cy="0" r="2" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+      <circle cx="0" cy="0" r="0.7" fill="#fde58f"/>
+      <path d="M0 2 L-1 5 L1 5 Z" fill="#3f7a3a"/>
+    </g>
+    <g transform="translate(72 124)">
+      <circle cx="0" cy="0" r="2" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+      <circle cx="0" cy="0" r="0.7" fill="#fde58f"/>
+      <path d="M0 2 L-1 5 L1 5 Z" fill="#3f7a3a"/>
+    </g>
+    <g transform="translate(86 116)">
+      <circle cx="0" cy="0" r="2.2" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+      <circle cx="0" cy="0" r="0.8" fill="#fde58f"/>
+      <path d="M-2 -1 Q 0 -2.5 2 -1" fill="none" stroke="#5a1818" stroke-width="0.3"/>
+      <path d="M0 2 L-1 6 L1 6 Z" fill="#3f7a3a"/>
+    </g>
+    <g transform="translate(20 130)">
+      <path d="M0 -2 Q 2 -1 2 1 Q 2 3 0 2 Q -2 3 -2 1 Q -2 -1 0 -2 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.4"/>
+      <ellipse cx="0" cy="0" rx="0.6" ry="1.2" fill="#fde58f"/>
+      <path d="M0 2.5 L0 6" stroke="#3f7a3a" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(50 132)">
+      <path d="M0 -2 Q 2 -1 2 1 Q 2 3 0 2 Q -2 3 -2 1 Q -2 -1 0 -2 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.4"/>
+      <ellipse cx="0" cy="0" rx="0.6" ry="1.2" fill="#fde58f"/>
+      <path d="M0 2.5 L0 5" stroke="#3f7a3a" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(80 130)">
+      <path d="M0 -2 Q 2 -1 2 1 Q 2 3 0 2 Q -2 3 -2 1 Q -2 -1 0 -2 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.4"/>
+      <ellipse cx="0" cy="0" rx="0.6" ry="1.2" fill="#fde58f"/>
+      <path d="M0 2.5 L0 6" stroke="#3f7a3a" stroke-width="0.5"/>
+    </g>
   </g>
 </svg>`,
 
@@ -1352,62 +1601,88 @@
   <path d="M44 120 Q 50 116 56 120 Q 50 123 44 120 Z" fill="#ede0a8"/>
 </svg>`,
 
-    // ========== 6. THE LOVERS — angel above, twin trees, two figures, mountain ==========
+    // ========== 6. THE LOVERS — angel of Raphael above, twin trees, Adam & Eve, mountain ==========
     6: `
 <svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
   <rect width="100" height="140" fill="url(#skyDay)"/>
-  <circle cx="50" cy="22" r="10" fill="url(#sunGlow)"/>
-  <circle cx="50" cy="22" r="5" fill="#ede0a8"/>
-  <g stroke="#c89a4a" stroke-width="0.5" opacity="0.7">
-    <line x1="50" y1="6" x2="50" y2="10"/><line x1="50" y1="34" x2="50" y2="38"/>
-    <line x1="34" y1="22" x2="38" y2="22"/><line x1="62" y1="22" x2="66" y2="22"/>
-    <line x1="40" y1="12" x2="42" y2="14"/><line x1="60" y1="12" x2="58" y2="14"/>
-    <line x1="40" y1="32" x2="42" y2="30"/><line x1="60" y1="32" x2="58" y2="30"/>
+  <circle cx="50" cy="20" r="12" fill="#fde58f"/>
+  <circle cx="50" cy="20" r="7" fill="#f7d553" stroke="#c8941a" stroke-width="0.5"/>
+  <g stroke="#c8941a" stroke-width="0.6" opacity="0.85">
+    <line x1="50" y1="2" x2="50" y2="6"/><line x1="50" y1="34" x2="50" y2="38"/>
+    <line x1="32" y1="20" x2="36" y2="20"/><line x1="64" y1="20" x2="68" y2="20"/>
+    <line x1="38" y1="8" x2="40" y2="10"/><line x1="62" y1="8" x2="60" y2="10"/>
+    <line x1="38" y1="32" x2="40" y2="30"/><line x1="62" y1="32" x2="60" y2="30"/>
   </g>
-  <path d="M28 80 L50 50 L72 80 Z" fill="url(#mountainFill)"/>
-  <path d="M50 50 L58 64 L42 64 Z" fill="#7a8aba" opacity="0.6"/>
-  <ellipse cx="50" cy="44" rx="34" ry="10" fill="#e8d8b0" opacity="0.55"/>
-  <g transform="translate(50 38)">
-    <path d="M-3 0 Q -18 -2 -22 6 Q -15 4 -3 6 Z" fill="url(#robeRed)" opacity="0.95"/>
-    <path d="M3 0 Q 18 -2 22 6 Q 15 4 3 6 Z" fill="url(#robeRed)" opacity="0.95"/>
-    <g stroke="#ede0a8" stroke-width="0.3" opacity="0.7" fill="none">
-      <path d="M-6 2 L-18 4 M-6 4 L-16 5"/>
-      <path d="M6 2 L18 4 M6 4 L16 5"/>
+  <g transform="translate(50 42)">
+    <path d="M-3 0 Q -22 -4 -28 8 Q -20 4 -3 6 Z" fill="#c8281a" stroke="#5a1818" stroke-width="0.5"/>
+    <path d="M3 0 Q 22 -4 28 8 Q 20 4 3 6 Z" fill="#c8281a" stroke="#5a1818" stroke-width="0.5"/>
+    <g stroke="#fbf6e6" stroke-width="0.4" opacity="0.7" fill="none">
+      <path d="M-8 2 L-20 4 M-8 4 L-18 5"/>
+      <path d="M8 2 L20 4 M8 4 L18 5"/>
     </g>
-    <circle cx="0" cy="-4" r="6" fill="url(#sunGlow)" opacity="0.7"/>
-    <circle cx="0" cy="-1" r="3" fill="#f5d8b4"/>
-    <path d="M-3 -2 Q 0 -5 3 -2 L 3 1 L -3 1 Z" fill="#7e5a2a"/>
-    <path d="M-4 2 L4 2 L5 10 L-5 10 Z" fill="url(#robeRed)"/>
-    <path d="M-4 2 L4 2 L3 4 L-3 4 Z" fill="#ede0a8" opacity="0.7"/>
+    <circle cx="0" cy="-3" r="6" fill="url(#sunGlow)" opacity="0.6"/>
+    <circle cx="0" cy="-1" r="3.2" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-3 -3 Q 0 -6 3 -3 L 3 -1 Q 1 0 0 0 Q -1 0 -3 -1 Z" fill="#c8941a" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-4 2 L4 2 L5 10 L-5 10 Z" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+    <path d="M-4 2 L4 2 L3 4 L-3 4 Z" fill="#fde58f" stroke="#1a0f06" stroke-width="0.3"/>
   </g>
-  <rect x="0" y="100" width="100" height="40" fill="url(#earthFill)"/>
-  <g transform="translate(30 92)">
-    <circle cx="0" cy="-8" r="3.5" fill="#f5d8b4"/>
-    <path d="M-3 -10 Q 0 -13 3 -10 L 4 -5 L -4 -5 Z" fill="#7e5a2a"/>
-    <path d="M-4 -4 L4 -4 L6 22 L-6 22 Z" fill="#f5d8b4"/>
-    <path d="M0 -4 L0 22" stroke="#7e5a2a" stroke-width="0.3" opacity="0.5"/>
+  <path d="M22 92 L36 64 L50 92 Z" fill="#7a8aba" stroke="#1a0f06" stroke-width="0.5"/>
+  <path d="M36 64 L42 76 L30 76 Z" fill="#b8c0d8"/>
+  <path d="M50 92 L64 60 L78 92 Z" fill="#7a8aba" stroke="#1a0f06" stroke-width="0.5"/>
+  <path d="M64 60 L70 74 L58 74 Z" fill="#b8c0d8"/>
+  <rect x="0" y="92" width="100" height="48" fill="#e0d0a0"/>
+  <path d="M0 100 Q 30 96 50 100 T 100 100" fill="none" stroke="#7a5828" stroke-width="0.4" opacity="0.6"/>
+  <g transform="translate(28 94)">
+    <rect x="-0.5" y="-2" width="1" height="26" fill="#5a3818" stroke="#1a0f06" stroke-width="0.2"/>
+    <g stroke="#1a0f06" stroke-width="0.3" fill="none">
+      <path d="M-0.5 4 Q -3 6 -4 10"/>
+      <path d="M0.5 8 Q 3 10 4 14"/>
+      <path d="M-0.5 12 Q -3 14 -4 18"/>
+    </g>
+    <circle cx="0" cy="-14" r="2.2" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-1.5 -16 Q 0 -18 1.5 -16 L 1.5 -13 L -1.5 -13 Z" fill="#c8941a"/>
+    <circle cx="-0.5" cy="-14" r="0.25" fill="#1a0f06"/>
+    <circle cx="0.5" cy="-14" r="0.25" fill="#1a0f06"/>
+    <path d="M-4 -8 Q -8 -5 -6 -2" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-4 -8 L0 -10 L4 -8 L4 6 L-4 6 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-2.5 6 L-2.5 18 M2.5 6 L2.5 18" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-3 6 L3 6 L4 24 L-4 24 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3" opacity="0"/>
   </g>
-  <g transform="translate(14 92)">
-    <rect x="-1" y="-10" width="2" height="22" fill="#5a3818"/>
-    <circle cx="0" cy="-14" r="6" fill="#5a7048"/>
-    <circle cx="-3" cy="-12" r="1.2" fill="#9a3a2a"/>
-    <circle cx="3" cy="-15" r="1.2" fill="#9a3a2a"/>
-    <circle cx="0" cy="-18" r="1.2" fill="#9a3a2a"/>
-    <circle cx="-1" cy="-10" r="1.2" fill="#9a3a2a"/>
-    <path d="M-2 -8 Q 4 -10 -2 -5 Q 4 -3 -2 0" stroke="#5a7048" stroke-width="0.7" fill="none"/>
-    <circle cx="-2" cy="-8" r="0.5" fill="#5a7048"/>
+  <g transform="translate(72 94)">
+    <rect x="-0.5" y="-2" width="1" height="26" fill="#5a3818" stroke="#1a0f06" stroke-width="0.2"/>
+    <g stroke="#1a0f06" stroke-width="0.3" fill="none">
+      <path d="M0.5 4 Q 3 6 4 10"/>
+      <path d="M-0.5 8 Q -3 10 -4 14"/>
+      <path d="M0.5 12 Q 3 14 4 18"/>
+    </g>
+    <circle cx="0" cy="-14" r="2.2" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-2.2 -15 Q -1 -18 0 -15 Q 1 -18 2.2 -15 Q 1.5 -13 0 -13 Q -1.5 -13 -2.2 -15 Z" fill="#c8941a" stroke="#1a0f06" stroke-width="0.3"/>
+    <circle cx="-0.5" cy="-14" r="0.25" fill="#1a0f06"/>
+    <circle cx="0.5" cy="-14" r="0.25" fill="#1a0f06"/>
+    <path d="M4 -8 Q 8 -5 6 -2" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-3 -10 Q 0 -13 3 -10 L 3 -8 Q 0 -7 -3 -8 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-3.5 -8 Q 0 -10 3.5 -8 L 4 8 L -4 8 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+    <path d="M-3 8 L3 8 L4 22 L-4 22 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3"/>
   </g>
-  <g transform="translate(70 92)">
-    <circle cx="0" cy="-8" r="3.5" fill="#f5d8b4"/>
-    <path d="M-3 -10 Q 0 -13 3 -10 L 4 -5 L -4 -5 Z" fill="#5a3818"/>
-    <path d="M-4 -4 L4 -4 L6 22 L-6 22 Z" fill="#f5d8b4"/>
-    <path d="M0 -4 L0 22" stroke="#5a3818" stroke-width="0.3" opacity="0.5"/>
+  <g transform="translate(14 94)">
+    <rect x="-0.6" y="-2" width="1.2" height="22" fill="#5a3818"/>
+    <circle cx="0" cy="-14" r="7" fill="#3f7a3a" stroke="#1a0f06" stroke-width="0.4"/>
+    <circle cx="-3" cy="-12" r="1.4" fill="#c8281a" stroke="#5a1818" stroke-width="0.3"/>
+    <circle cx="3" cy="-15" r="1.4" fill="#c8281a" stroke="#5a1818" stroke-width="0.3"/>
+    <circle cx="0" cy="-18" r="1.4" fill="#c8281a" stroke="#5a1818" stroke-width="0.3"/>
+    <circle cx="-2" cy="-9" r="1.4" fill="#c8281a" stroke="#5a1818" stroke-width="0.3"/>
+    <circle cx="2" cy="-10" r="1.4" fill="#c8281a" stroke="#5a1818" stroke-width="0.3"/>
   </g>
-  <g transform="translate(86 92)">
-    <rect x="-1" y="-10" width="2" height="22" fill="#5a3818"/>
-    <path d="M0 -22 Q -3 -18 -2 -14 Q 0 -16 0 -22 Z M0 -20 Q 3 -16 2 -12 Q 0 -14 0 -20 Z" fill="#9a3a2a"/>
-    <path d="M-2 -14 Q -4 -10 -3 -6 Q 0 -8 -2 -14 Z M2 -14 Q 4 -10 3 -6 Q 0 -8 2 -14 Z" fill="#c89a4a"/>
-    <path d="M0 -12 Q -2 -8 -1 -4 Q 0 -6 0 -12 Z" fill="#ede0a8"/>
+  <g transform="translate(86 94)">
+    <rect x="-0.6" y="-2" width="1.2" height="22" fill="#5a3818"/>
+    <g fill="#fde58f" stroke="#c8941a" stroke-width="0.4">
+      <path d="M0 -22 Q -2 -19 0 -16 Q 2 -19 0 -22 Z"/>
+      <path d="M-1 -18 Q -3 -15 -1 -12 Q 1 -15 -1 -18 Z"/>
+      <path d="M1 -16 Q 3 -13 1 -10 Q -1 -13 1 -16 Z"/>
+      <path d="M0 -12 Q -2 -9 0 -6 Q 2 -9 0 -12 Z"/>
+    </g>
+    <path d="M-2 -22 Q 0 -24 2 -22 Q 0 -20 -2 -22 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-2 -10 Q 0 -8 -1 -4 Q 0 -6 0 -10 Z" fill="#1a0f06" opacity="0.6"/>
   </g>
 </svg>`,
 
@@ -1553,89 +1828,140 @@
   </g>
 </svg>`,
 
-    // ========== 19. THE SUN — radiant face, 16 alternating rays, child on horse, banner, sunflowers ==========
+    // ========== 19. THE SUN — radiant face, alternating rays, child on white horse, banner, sunflowers ==========
     19: `
 <svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
   <rect width="100" height="140" fill="url(#skyDay)"/>
-  <circle cx="50" cy="38" r="30" fill="url(#sunGlow)"/>
   <g transform="translate(50 38)">
-    <g fill="url(#goldVert)">
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(45)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(90)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(135)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(180)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(225)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(270)"/>
-      <path d="M-1.2 -32 L1.2 -32 L0.6 -22 L-0.6 -22 Z" transform="rotate(315)"/>
+    <g fill="#fde58f" stroke="#c8941a" stroke-width="0.5">
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(45)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(90)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(135)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(180)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(225)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(270)"/>
+      <path d="M-2 -34 L2 -34 L1 -22 L-1 -22 Z" transform="rotate(315)"/>
     </g>
-    <g stroke="#c89a4a" stroke-width="0.9" fill="none" opacity="0.95">
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(22.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(67.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(112.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(157.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(202.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(247.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(292.5)"/>
-      <path d="M0 -22 Q 1.2 -25 0 -28 Q -1.2 -31 0 -34" transform="rotate(337.5)"/>
+    <g stroke="#c8941a" stroke-width="0.9" fill="none">
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(22.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(67.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(112.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(157.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(202.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(247.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(292.5)"/>
+      <path d="M0 -22 Q 1.5 -26 0 -30 Q -1.5 -34 0 -36" transform="rotate(337.5)"/>
     </g>
-    <circle r="17" fill="#ede0a8" stroke="#7e5a2a" stroke-width="0.5"/>
-    <circle r="17" fill="none" stroke="#c89a4a" stroke-width="0.3" opacity="0.7"/>
-    <g fill="#7e5a2a">
-      <ellipse cx="-5" cy="-3" rx="1.4" ry="1.6"/>
-      <ellipse cx="5" cy="-3" rx="1.4" ry="1.6"/>
+    <circle r="18" fill="#fde58f" stroke="#1a0f06" stroke-width="0.6"/>
+    <circle r="18" fill="none" stroke="#c8941a" stroke-width="0.4" opacity="0.7"/>
+    <g fill="#1a0f06">
+      <ellipse cx="-5" cy="-3" rx="1.2" ry="1.4"/>
+      <ellipse cx="5" cy="-3" rx="1.2" ry="1.4"/>
     </g>
-    <circle cx="-5" cy="-3.5" r="0.5" fill="#ede0a8"/>
-    <circle cx="5" cy="-3.5" r="0.5" fill="#ede0a8"/>
-    <path d="M-5 4 Q 0 8 5 4" stroke="#7e5a2a" stroke-width="0.8" fill="none"/>
-    <circle cx="-9" cy="3" r="2" fill="#f5a8a0" opacity="0.6"/>
-    <circle cx="9" cy="3" r="2" fill="#f5a8a0" opacity="0.6"/>
-    <path d="M-2 -7 Q 0 -8 2 -7" stroke="#7e5a2a" stroke-width="0.4" fill="none"/>
+    <path d="M-5 4 Q 0 8 5 4" stroke="#1a0f06" stroke-width="0.8" fill="none"/>
+    <circle cx="-9" cy="3" r="2" fill="#f5a8a0" opacity="0.7"/>
+    <circle cx="9" cy="3" r="2" fill="#f5a8a0" opacity="0.7"/>
+    <path d="M-2 -7 Q 0 -8 2 -7" stroke="#1a0f06" stroke-width="0.4" fill="none"/>
+    <path d="M-7 -5 Q -5 -7 -3 -5" stroke="#1a0f06" stroke-width="0.4" fill="none"/>
+    <path d="M3 -5 Q 5 -7 7 -5" stroke="#1a0f06" stroke-width="0.4" fill="none"/>
   </g>
-  <rect x="0" y="92" width="100" height="6" fill="#7e5a2a"/>
-  <rect x="0" y="92" width="100" height="6" fill="url(#goldHoriz)" opacity="0.3"/>
-  <g stroke="#6a4828" stroke-width="0.3" opacity="0.7">
-    <line x1="10" y1="92" x2="10" y2="98"/><line x1="30" y1="92" x2="30" y2="98"/>
-    <line x1="50" y1="92" x2="50" y2="98"/><line x1="70" y1="92" x2="70" y2="98"/>
-    <line x1="90" y1="92" x2="90" y2="98"/>
-    <line x1="0" y1="95" x2="100" y2="95"/>
+  <rect x="0" y="92" width="100" height="6" fill="#c8941a" stroke="#1a0f06" stroke-width="0.4"/>
+  <g stroke="#1a0f06" stroke-width="0.4" opacity="0.7">
+    <line x1="14" y1="92" x2="14" y2="98"/><line x1="32" y1="92" x2="32" y2="98"/>
+    <line x1="50" y1="92" x2="50" y2="98"/><line x1="68" y1="92" x2="68" y2="98"/>
+    <line x1="86" y1="92" x2="86" y2="98"/>
   </g>
   <g>
-    <g transform="translate(14 90)"><circle r="2.6" fill="#c89a4a" stroke="#7e5a2a" stroke-width="0.3"/><circle r="1.1" fill="#7a4818"/></g>
-    <g transform="translate(34 88)"><circle r="2.9" fill="#c89a4a" stroke="#7e5a2a" stroke-width="0.3"/><circle r="1.3" fill="#7a4818"/></g>
-    <g transform="translate(66 88)"><circle r="2.9" fill="#c89a4a" stroke="#7e5a2a" stroke-width="0.3"/><circle r="1.3" fill="#7a4818"/></g>
-    <g transform="translate(86 90)"><circle r="2.6" fill="#c89a4a" stroke="#7e5a2a" stroke-width="0.3"/><circle r="1.1" fill="#7a4818"/></g>
+    <g transform="translate(10 88)">
+      <g fill="#fde58f" stroke="#c8941a" stroke-width="0.4">
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(45 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(90 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(135 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(180 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(225 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(270 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(315 0 0)"/>
+      </g>
+      <circle r="2" fill="#7a4828" stroke="#1a0f06" stroke-width="0.4"/>
+      <line x1="0" y1="2" x2="0" y2="10" stroke="#3f7a3a" stroke-width="0.6"/>
+    </g>
+    <g transform="translate(28 86)">
+      <g fill="#fde58f" stroke="#c8941a" stroke-width="0.4">
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(45 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(90 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(135 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(180 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(225 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(270 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(315 0 0)"/>
+      </g>
+      <circle r="2.5" fill="#7a4828" stroke="#1a0f06" stroke-width="0.4"/>
+      <line x1="0" y1="2" x2="0" y2="12" stroke="#3f7a3a" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(72 86)">
+      <g fill="#fde58f" stroke="#c8941a" stroke-width="0.4">
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(45 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(90 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(135 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(180 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(225 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(270 0 0)"/>
+        <ellipse cx="0" cy="-5" rx="1.5" ry="3" transform="rotate(315 0 0)"/>
+      </g>
+      <circle r="2.5" fill="#7a4828" stroke="#1a0f06" stroke-width="0.4"/>
+      <line x1="0" y1="2" x2="0" y2="12" stroke="#3f7a3a" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(90 88)">
+      <g fill="#fde58f" stroke="#c8941a" stroke-width="0.4">
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(45 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(90 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(135 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(180 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(225 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(270 0 0)"/>
+        <ellipse cx="0" cy="-4" rx="1.3" ry="2.5" transform="rotate(315 0 0)"/>
+      </g>
+      <circle r="2" fill="#7a4828" stroke="#1a0f06" stroke-width="0.4"/>
+      <line x1="0" y1="2" x2="0" y2="10" stroke="#3f7a3a" stroke-width="0.6"/>
+    </g>
   </g>
-  <rect x="0" y="98" width="100" height="42" fill="url(#earthFill)"/>
+  <rect x="0" y="98" width="100" height="42" fill="#e0d0a0"/>
   <g transform="translate(48 118)">
-    <ellipse cx="0" cy="0" rx="14" ry="5" fill="#e8d8b0" stroke="#7e5a2a" stroke-width="0.4"/>
-    <path d="M12 -2 L18 -8 L22 -7 L20 -3 L14 1 Z" fill="#e8d8b0" stroke="#7e5a2a" stroke-width="0.4"/>
-    <path d="M18 -7 L16 -10 L17 -7 L15 -10 L16 -7 L14 -9" stroke="#7e5a2a" stroke-width="0.5" fill="none"/>
-    <circle cx="20" cy="-5" r="0.3" fill="#1a1024"/>
-    <line x1="-8" y1="5" x2="-8" y2="14" stroke="#e8d8b0" stroke-width="2"/>
-    <line x1="-4" y1="5" x2="-4" y2="14" stroke="#e8d8b0" stroke-width="2"/>
-    <line x1="6" y1="5" x2="6" y2="14" stroke="#e8d8b0" stroke-width="2"/>
-    <line x1="10" y1="5" x2="10" y2="14" stroke="#e8d8b0" stroke-width="2"/>
-    <line x1="-8" y1="5" x2="-8" y2="14" stroke="#7e5a2a" stroke-width="0.3"/>
-    <line x1="-4" y1="5" x2="-4" y2="14" stroke="#7e5a2a" stroke-width="0.3"/>
-    <line x1="6" y1="5" x2="6" y2="14" stroke="#7e5a2a" stroke-width="0.3"/>
-    <line x1="10" y1="5" x2="10" y2="14" stroke="#7e5a2a" stroke-width="0.3"/>
-    <path d="M-13 -1 Q -18 0 -16 6 Q -15 8 -17 10" stroke="#7e5a2a" stroke-width="0.6" fill="none"/>
+    <ellipse cx="0" cy="0" rx="14" ry="5" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M12 -2 L18 -8 L22 -7 L20 -3 L14 1 Z" fill="#fbf6e6" stroke="#1a0f06" stroke-width="0.5"/>
+    <path d="M18 -7 L16 -10 M18 -7 L19 -10 M17 -7 L17.5 -10" stroke="#1a0f06" stroke-width="0.4" fill="none"/>
+    <circle cx="20" cy="-5" r="0.3" fill="#1a0f06"/>
+    <path d="M19 -4 Q 21 -3 22 -4" stroke="#1a0f06" stroke-width="0.3" fill="none"/>
+    <line x1="-8" y1="5" x2="-8" y2="14" stroke="#fbf6e6" stroke-width="2"/>
+    <line x1="-4" y1="5" x2="-4" y2="14" stroke="#fbf6e6" stroke-width="2"/>
+    <line x1="6" y1="5" x2="6" y2="14" stroke="#fbf6e6" stroke-width="2"/>
+    <line x1="10" y1="5" x2="10" y2="14" stroke="#fbf6e6" stroke-width="2"/>
+    <line x1="-8" y1="5" x2="-8" y2="14" stroke="#1a0f06" stroke-width="0.3"/>
+    <line x1="-4" y1="5" x2="-4" y2="14" stroke="#1a0f06" stroke-width="0.3"/>
+    <line x1="6" y1="5" x2="6" y2="14" stroke="#1a0f06" stroke-width="0.3"/>
+    <line x1="10" y1="5" x2="10" y2="14" stroke="#1a0f06" stroke-width="0.3"/>
+    <path d="M-13 -1 Q -18 -2 -16 4 Q -14 8 -17 12" stroke="#fbf6e6" stroke-width="1.5" fill="none"/>
+    <path d="M-13 -1 Q -18 -2 -16 4 Q -14 8 -17 12" stroke="#1a0f06" stroke-width="0.3" fill="none"/>
     <g transform="translate(0 -10)">
-      <circle cx="0" cy="-2" r="3.2" fill="#f5d8b4"/>
-      <path d="M-3 -4 Q 0 -7 3 -4" stroke="#9a3a2a" stroke-width="0.8" fill="none"/>
-      <circle cx="-2" cy="-4" r="0.7" fill="#9a3a2a"/>
-      <circle cx="0" cy="-5" r="0.7" fill="#9a3a2a"/>
-      <circle cx="2" cy="-4" r="0.7" fill="#9a3a2a"/>
-      <circle cx="-1.2" cy="-2.6" r="0.3" fill="#1a1024"/>
-      <circle cx="1.2" cy="-2.6" r="0.3" fill="#1a1024"/>
-      <path d="M-1 -1 Q 0 0 1 -1" stroke="#9a3838" stroke-width="0.3" fill="none"/>
-      <path d="M-3 0 L3 0 L4 6 L-4 6 Z" fill="#f5d8b4"/>
-      <path d="M-3 0 L3 0 L2 1.5 L-2 1.5 Z" fill="#ede0a8" opacity="0.8"/>
-      <path d="M3 1 L8 -6" stroke="#f5d8b4" stroke-width="1.3" stroke-linecap="round"/>
-      <line x1="6" y1="-6" x2="10" y2="-16" stroke="#7e5a2a" stroke-width="0.6"/>
-      <path d="M10 -16 L20 -14 L19 -12 L21 -10 L18 -10 L9 -12 Z" fill="url(#robeRed)" stroke="#6a1828" stroke-width="0.3"/>
-      <path d="M10 -16 L20 -14" stroke="#ede0a8" stroke-width="0.3" opacity="0.7"/>
+      <circle cx="0" cy="-2" r="3.5" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.4"/>
+      <path d="M-4 -5 Q 0 -8 4 -5" stroke="#c8281a" stroke-width="0.8" fill="none"/>
+      <circle cx="-2.5" cy="-4.5" r="0.9" fill="#c8281a" stroke="#5a1818" stroke-width="0.2"/>
+      <circle cx="0" cy="-5.5" r="0.9" fill="#c8281a" stroke="#5a1818" stroke-width="0.2"/>
+      <circle cx="2.5" cy="-4.5" r="0.9" fill="#c8281a" stroke="#5a1818" stroke-width="0.2"/>
+      <circle cx="-1.3" cy="-2.5" r="0.3" fill="#1a0f06"/>
+      <circle cx="1.3" cy="-2.5" r="0.3" fill="#1a0f06"/>
+      <path d="M-1 -1 Q 0 0 1 -1" stroke="#c8281a" stroke-width="0.3" fill="none"/>
+      <path d="M-3 0 L3 0 L4 6 L-4 6 Z" fill="#f5d8b4" stroke="#1a0f06" stroke-width="0.3"/>
+      <path d="M3 1 L8 -6" stroke="#f5d8b4" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M3 1 L8 -6" stroke="#1a0f06" stroke-width="0.3" stroke-linecap="round"/>
+      <line x1="6" y1="-6" x2="10" y2="-16" stroke="#7a4828" stroke-width="0.6"/>
+      <path d="M10 -16 L20 -14 L19 -10 L21 -8 L18 -8 L9 -12 Z" fill="#c8281a" stroke="#5a1818" stroke-width="0.4"/>
+      <path d="M10 -16 L20 -14" stroke="#fbf6e6" stroke-width="0.3"/>
     </g>
   </g>
 </svg>`,
@@ -2285,6 +2611,7 @@
   };
 
   function buildScene(card) {
+    if (card.suit) return buildMinorScene(card);
     if (SCENE_SVG[card.num]) return SCENE_SVG[card.num];
     return `
 <svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
@@ -2295,8 +2622,139 @@
   }
 
   // ============================================
+  // 5b. MINOR ARCANA SCENE GENERATOR
+  // ============================================
+  const SUIT_EMBLEM = { w: "emblemWand", c: "emblemCup", s: "emblemSword", p: "emblemPent" };
+  const SUIT_SKY    = { w: "skyDawn",    c: "skyDay",    s: "skyTwilight", p: "skyDay" };
+  const SUIT_GROUND = {
+    w: '<path d="M0 110 Q 50 105 100 110 L100 140 L0 140 Z" fill="#7a4818" opacity="0.85"/>',
+    c: '<path d="M0 110 L100 110 L100 140 L0 140 Z" fill="#3a5e78"/><g stroke="#5a7898" stroke-width="0.4" opacity="0.55"><line x1="0" y1="116" x2="100" y2="116"/><line x1="0" y1="124" x2="100" y2="124"/><line x1="0" y1="132" x2="100" y2="132"/></g>',
+    s: '<path d="M0 108 Q 50 100 100 108 L100 140 L0 140 Z" fill="#5a4838"/>',
+    p: '<path d="M0 108 Q 50 102 100 108 L100 140 L0 140 Z" fill="#3c7028"/><path d="M0 116 Q 50 110 100 116 L100 140 L0 140 Z" fill="#2a5418"/>'
+  };
+
+  // Pip positions (centre points within 100x140 viewBox)
+  const PIP_POSITIONS = {
+    1:  [[50, 70]],
+    2:  [[50, 35], [50, 105]],
+    3:  [[50, 28], [50, 70], [50, 112]],
+    4:  [[32, 35], [68, 35], [32, 105], [68, 105]],
+    5:  [[32, 30], [68, 30], [50, 70], [32, 110], [68, 110]],
+    6:  [[32, 28], [68, 28], [32, 70], [68, 70], [32, 112], [68, 112]],
+    7:  [[32, 24], [68, 24], [50, 48], [32, 72], [68, 72], [32, 110], [68, 110]],
+    8:  [[32, 22], [68, 22], [32, 52], [68, 52], [32, 90], [68, 90], [32, 118], [68, 118]],
+    9:  [[32, 22], [68, 22], [32, 52], [68, 52], [50, 70], [32, 88], [68, 88], [32, 118], [68, 118]],
+    10: [[32, 20], [68, 20], [50, 35], [32, 52], [68, 52], [32, 90], [68, 90], [50, 105], [32, 122], [68, 122]]
+  };
+
+  function buildMinorScene(card) {
+    const sky    = SUIT_SKY[card.suit];
+    const emblem = SUIT_EMBLEM[card.suit];
+    const ground = SUIT_GROUND[card.suit];
+    const isCourt = ["P", "N", "Q", "K"].includes(card.rank);
+    if (isCourt) return buildCourtScene(card, sky, ground, emblem);
+    return buildPipScene(card, sky, ground, emblem);
+  }
+
+  function buildPipScene(card, sky, ground, emblem) {
+    const n = card.rank === "A" ? 1 : parseInt(card.rank, 10);
+    const positions = PIP_POSITIONS[n] || [[50, 70]];
+    const size = n <= 3 ? 26 : n <= 5 ? 22 : n <= 7 ? 19 : 16;
+    const half = size / 2;
+    const icons = positions
+      .map(([x, y]) => `<use href="#${emblem}" x="${(x - half).toFixed(1)}" y="${(y - half).toFixed(1)}" width="${size}" height="${size}"/>`)
+      .join("\n  ");
+    const aceHalo = n === 1
+      ? `<circle cx="50" cy="70" r="28" fill="url(#sunGlow)" opacity="0.55"/>`
+      : "";
+    return `
+<svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
+  <rect width="100" height="140" fill="url(#${sky})"/>
+  ${ground}
+  ${aceHalo}
+  ${icons}
+</svg>`;
+  }
+
+  function buildCourtScene(card, sky, ground, emblem) {
+    const rank = card.rank;
+    const robe = (card.suit === "c" || card.suit === "s") ? "robeBlue" : "robeRed";
+    return `
+<svg class="scene-svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
+  <rect width="100" height="140" fill="url(#${sky})"/>
+  ${ground}
+  ${throneByRank(rank)}
+  <g transform="translate(50 64)">
+    <path d="M-18 60 L-14 14 L14 14 L18 60 Z" fill="url(#${robe})" stroke="#1b0f06" stroke-width="0.3"/>
+    <path d="M-10 14 L-10 60 L10 60 L10 14 Z" fill="url(#${robe})" opacity="0.85"/>
+    <path d="M-10 14 Q 0 22 10 14 L8 24 L-8 24 Z" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+    <circle cx="0" cy="0" r="9" fill="#f4d8a8" stroke="#5a3812" stroke-width="0.4"/>
+    <g fill="#1b0f06"><circle cx="-2.5" cy="-1" r="0.5"/><circle cx="2.5" cy="-1" r="0.5"/></g>
+    <path d="M-2 3 Q 0 4.2 2 3" stroke="#7a2818" stroke-width="0.4" fill="none"/>
+    ${headTopByRank(rank)}
+    ${crownByRank(rank)}
+  </g>
+  <g transform="translate(78 75)">
+    <use href="#${emblem}" x="-10" y="-16" width="20" height="32"/>
+  </g>
+  <line x1="68" y1="80" x2="74" y2="68" stroke="#f4d8a8" stroke-width="2" stroke-linecap="round"/>
+</svg>`;
+  }
+
+  function throneByRank(rank) {
+    // Page stands; others sit on a throne
+    if (rank === "P") {
+      return `<path d="M30 124 L30 100 L70 100 L70 124 Z" fill="#7a6048" opacity="0.6"/>`;
+    }
+    const seatH = rank === "K" ? 22 : rank === "Q" ? 18 : 16;
+    return `
+  <rect x="28" y="${65 - 4}" width="44" height="${seatH + 60}" fill="#7a6048" stroke="#3a2818" stroke-width="0.3"/>
+  <rect x="24" y="${56 - (rank === "K" ? 8 : 4)}" width="52" height="9" fill="#5a4838" stroke="#2a1812" stroke-width="0.3"/>
+  ${rank === "K"
+    ? '<g fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"><circle cx="28" cy="50" r="2.5"/><circle cx="72" cy="50" r="2.5"/></g>'
+    : ''}`;
+  }
+
+  function headTopByRank(rank) {
+    // hair tone differs by rank for slight visual variation
+    if (rank === "P") return `<path d="M-6 -7 Q 0 -12 6 -7 L5 -2 L-5 -2 Z" fill="#7a4818"/>`;
+    if (rank === "N") return `<path d="M-7 -2 L-7 -8 L-5 -10 L5 -10 L7 -8 L7 -2 Z" fill="#5a5048" stroke="#1b0f06" stroke-width="0.3"/>`;
+    if (rank === "Q") return `<path d="M-7 -4 Q 0 -10 7 -4 L6 0 L-6 0 Z" fill="#c89a3a"/>`;
+    if (rank === "K") return `<path d="M-7 -3 Q 0 -7 7 -3 L6 2 L-6 2 Z M-8 -3 Q -10 4 -7 8" fill="#a08050"/>`;
+    return "";
+  }
+
+  function crownByRank(rank) {
+    if (rank === "P") {
+      return `<rect x="-5" y="-13" width="10" height="3" fill="#7a4818" stroke="#3a2818" stroke-width="0.3"/>`;
+    }
+    if (rank === "N") {
+      return `<g fill="#dcdcd4" stroke="#3a3a40" stroke-width="0.25"><rect x="-4" y="-13" width="8" height="2"/><path d="M-2 -13 L-2 -16 L2 -16 L2 -13 Z"/></g>`;
+    }
+    if (rank === "Q") {
+      return `<g transform="translate(0 -12)"><path d="M-7 0 L-5 -5 L-3 -1 L0 -6 L3 -1 L5 -5 L7 0 Z" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/><circle cx="0" cy="-4" r="0.8" fill="#d94228"/></g>`;
+    }
+    if (rank === "K") {
+      return `<g transform="translate(0 -12)">
+        <rect x="-7" y="-1" width="14" height="3" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+        <path d="M-7 -1 L-5 -7 L-3 -2 L0 -8 L3 -2 L5 -7 L7 -1 Z" fill="url(#goldVert)" stroke="#5a3812" stroke-width="0.3"/>
+        <g fill="#d94228"><circle cx="-5" cy="-6" r="0.7"/><circle cx="0" cy="-7" r="0.9"/><circle cx="5" cy="-6" r="0.7"/></g>
+      </g>`;
+    }
+    return "";
+  }
+
+  // ============================================
   // 6. CARD ELEMENT BUILDER
   // ============================================
+  function topLabel(card) {
+    if (card.suit) {
+      const r = MINOR_RANKS.find(x => x.id === card.rank);
+      return r ? r.label : card.rank;
+    }
+    return ROMAN[card.num] ?? card.num;
+  }
+
   function buildCardEl({ card = null, isReversed = false, flipped = false } = {}) {
     const el = document.createElement("div");
     el.className = "card" + (flipped ? " flipped" : "");
@@ -2333,7 +2791,7 @@
       const content = document.createElement("div");
       content.className = "card-front-content";
       content.innerHTML = `
-        <div class="num-banner">${ROMAN[card.num] ?? card.num}</div>
+        <div class="num-banner">${topLabel(card)}</div>
         <div class="scene">${buildScene(card)}</div>
         <div class="name-banner">
           <div class="name">${card.name}</div>
@@ -2352,6 +2810,20 @@
   // ============================================
   // 6. SCREEN: INTRO
   // ============================================
+  const MODE_DESC = {
+    major: "<strong>메이저 아르카나</strong> — 인생의 큰 흐름과 운명의 굵직한 줄기를 비춥니다.",
+    minor: "<strong>마이너 아르카나</strong> — 일상의 구체적인 사건, 관계, 일·돈의 결을 보여줍니다.",
+    all:   "<strong>전체 78장</strong> — 큰 흐름과 일상의 결을 모두 함께 살핍니다."
+  };
+  document.querySelectorAll("#mode-select .mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#mode-select .mode-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.mode = btn.dataset.mode;
+      $("#mode-desc").innerHTML = MODE_DESC[state.mode];
+    });
+  });
+
   $("#btn-start").addEventListener("click", () => {
     const q = $("#question-input").value.trim();
     state.question = q || "오늘 나의 흐름은 어떤가요?";
@@ -2364,7 +2836,7 @@
   function startPickScreen() {
     $("#question-echo").textContent = "Q. " + state.question;
 
-    state.shuffledDeck = shuffle(TAROT_DECK);
+    state.shuffledDeck = shuffle(getActiveDeck());
     state.picked = [];
     state.results = [];
     updatePickCount();
@@ -2411,7 +2883,7 @@
 
     state.results = state.picked.map(idx => ({
       card: state.shuffledDeck[idx],
-      isReversed: Math.random() < 0.5
+      isReversed: false
     }));
 
     // Render cards
@@ -2443,25 +2915,20 @@
     interpretList.innerHTML = "";
     state.results.forEach((r, i) => {
       const card = r.card;
-      const isRev = r.isReversed;
       const position = POSITIONS[i];
-      const orient = isRev ? "reversed" : "upright";
-      const keywords = isRev ? card.reversed : card.upright;
-      const story = isRev ? card.reversedStory : card.uprightStory;
-      const lead = POSITION_LEADS[position][orient];
+      const lead = POSITION_LEADS[position].upright;
 
       const div = document.createElement("div");
       div.className = "interpret-card";
       div.innerHTML = `
         <div class="pos-row">
           <span class="pos">${position}</span>
-          <span class="orient ${orient}">${isRev ? "역방향" : "정방향"}</span>
         </div>
         <div class="card-name">${card.name}</div>
         <div class="card-name-en">${card.nameEn}</div>
-        <div class="keywords">${keywords}</div>
+        <div class="keywords">${card.upright}</div>
         <div class="lead">${lead}</div>
-        <div class="prophecy">${story}</div>
+        <div class="prophecy">${card.uprightStory}</div>
       `;
       interpretList.appendChild(div);
     });
@@ -2497,37 +2964,23 @@
   // 9. OVERALL PROPHECY SYNTHESIS
   // ============================================
   function buildOverallProphecy(results) {
-    const reversedCount = results.filter(r => r.isReversed).length;
-    const [past, present, future] = results;
+    const majors = results.filter(r => !r.card.suit).length;
+    const minors = 3 - majors;
 
     let title, body, advice;
 
-    if (reversedCount === 0) {
-      title = "별이 당신의 편에 섰습니다";
-      body = "세 장의 카드가 모두 바로 선 채로 떠올랐습니다. 우주가 당신의 길을 환하게 비추는 보기 드문 점괘입니다. 의심도, 망설임도 내려놓고 마음이 향하는 곳으로 나아가세요.";
-    } else if (reversedCount === 3) {
-      title = "지금은 시험의 시간입니다";
-      body = "세 장 모두 거꾸로 떠올랐습니다. 흐름이 거슬러 흐르고 있다는 신호입니다. 그러나 가장 짙은 어둠 속에서 별은 가장 밝게 빛납니다. 지금은 잠시 멈춰 숨을 고르고, 무엇을 내려놓아야 할지 정직하게 들여다볼 때입니다.";
-    } else if (reversedCount === 1) {
-      title = "큰 흐름은 당신을 향합니다";
-      const reversedIdx = results.findIndex(r => r.isReversed);
-      const where = POSITIONS[reversedIdx];
-      body = `전반적인 운은 좋은 방향으로 흐르고 있습니다. 다만 ${where}의 자리에서 풀어야 할 한 가지 매듭이 보입니다. 그 부분만 의식적으로 매만진다면, 길은 부드럽게 이어집니다.`;
+    if (majors === 3) {
+      title = "운명의 큰 별이 정렬됩니다";
+      body = "세 장 모두 메이저 아르카나입니다. 작은 사건이 아니라 인생의 큰 줄기가 움직이는 시기입니다. 평범한 결정처럼 보이는 것이 사실은 운명의 분기점일 수 있습니다. 결을 따라 흐름에 몸을 맡기세요.";
+      advice = "<strong>조언</strong> — 사소한 결정이라도 가벼이 넘기지 마세요. 지금의 선택이 오래 메아리칩니다.";
+    } else if (minors === 3) {
+      title = "일상의 결이 풀려갑니다";
+      body = "세 장 모두 마이너 아르카나입니다. 거창한 변화보다 일상의 구체적인 사건, 관계, 일·돈의 결이 보입니다. 손에 잡히는 실용적인 단서들이 도착했습니다. 그것을 차분히 하나씩 다루세요.";
+      advice = "<strong>조언</strong> — 큰 그림을 그리기보다, 오늘 할 수 있는 한 가지를 단단히 해내세요.";
     } else {
-      title = "교차로에 서 있습니다";
-      body = "빛과 그림자가 함께 어우러진 점괘입니다. 모든 일이 뜻대로만 흐르지는 않겠지만, 그 안에서도 분명히 잡아야 할 기회가 숨어 있습니다. 지금의 선택이 다음 결을 가릅니다.";
-    }
-
-    if (!past.isReversed && future.isReversed) {
-      advice = "<strong>주의</strong> — 과거의 좋은 기운이 흐트러질 수 있습니다. 지금 단단히 붙잡아야 할 것이 무엇인지 분명히 하세요.";
-    } else if (past.isReversed && !future.isReversed) {
-      advice = "<strong>희소식</strong> — 어두웠던 시간이 끝나고, 빛으로 향하는 길목에 서 있습니다. 지난 일에 미련을 두지 마세요.";
-    } else if (!present.isReversed && !future.isReversed) {
-      advice = "<strong>조언</strong> — 지금의 흐름을 신뢰하고, 한 걸음씩 차분히 나아가세요. 서두를 필요가 없습니다.";
-    } else if (present.isReversed && future.isReversed) {
-      advice = "<strong>조언</strong> — 익숙한 패턴 하나를 의식적으로 끊어내세요. 같은 길을 반복하면 같은 결말에 닿습니다.";
-    } else {
-      advice = "<strong>조언</strong> — 지금의 답답함은 다음 단계로 넘어가기 위한 통과의례입니다. 한 번 더 호흡하고, 한 발만 내디뎌 보세요.";
+      title = "큰 흐름과 일상이 만납니다";
+      body = "운명의 굵직한 흐름과 일상의 결이 함께 어우러진 점괘입니다. 보이지 않는 큰 물결 위에서, 손에 잡히는 구체적인 사건들이 움직입니다. 한쪽만 보지 말고 두 결을 모두 읽으세요.";
+      advice = "<strong>조언</strong> — 큰 방향은 신뢰하되, 매일의 한 걸음에 정성을 들이세요.";
     }
 
     return { title, body, advice };
@@ -2538,10 +2991,15 @@
   // ============================================
   $("#btn-reset").addEventListener("click", () => {
     state.question = "";
+    state.mode = "major";
     state.shuffledDeck = [];
     state.picked = [];
     state.results = [];
     $("#question-input").value = "";
+    document.querySelectorAll("#mode-select .mode-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.mode === "major");
+    });
+    $("#mode-desc").innerHTML = MODE_DESC.major;
     $("#deck-area").innerHTML = "";
     $("#result-cards").innerHTML = "";
     $("#interpret-list").innerHTML = "";
