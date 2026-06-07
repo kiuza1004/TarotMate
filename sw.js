@@ -1,4 +1,4 @@
-const CACHE = "tarotmate-v3";
+const CACHE = "tarotmate-v4";
 const PRECACHE = [
   "./",
   "./index.html",

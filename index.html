@@ -393,7 +393,7 @@
 
   .card-front-content {
     position: absolute;
-    inset: 16px 12px 30px;
+    inset: 14px 10px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -460,7 +460,7 @@
     position: relative;
     flex-shrink: 0;
     width: 100%;
-    padding: 5px 6px 8px;
+    padding: 4px 4px 5px;
     background: transparent;
     border: none;
     border-top: 0.5px solid rgba(26, 15, 6, 0.4);
@@ -478,26 +478,25 @@
     font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
     font-size: 11px;
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.25;
     color: #1a0f06;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     word-break: keep-all;
     text-transform: none;
   }
   .card-front .name-en {
     display: block;
-    font-size: 7px;
+    font-size: 8.5px;
     font-weight: 600;
     font-style: normal;
     color: #1a0f06;
-    margin-top: 3px;
-    line-height: 1.8;
-    letter-spacing: 0.1em;
-    opacity: 0.88;
+    margin-top: 2px;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
     text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
     max-width: 100%;
   }
 
@@ -791,10 +790,10 @@
   @media (max-width: 400px) {
     .app { padding: 20px 12px 36px; gap: 16px; }
     .deck-area { grid-template-columns: repeat(3, 1fr); gap: 7px; }
-    .card-front-content { inset: 13px 8px 26px; }
+    .card-front-content { inset: 12px 8px 10px; }
     .card-front .num-banner { font-size: 10px; padding: 1px 10px 2px; letter-spacing: 0.18em; }
-    .card-front .name { font-size: 10px; letter-spacing: 0.04em; line-height: 1.4; }
-    .card-front .name-en { font-size: 6.5px; letter-spacing: 0.08em; line-height: 1.8; }
+    .card-front .name { font-size: 10px; letter-spacing: 0.03em; line-height: 1.25; }
+    .card-front .name-en { font-size: 7.5px; letter-spacing: 0.01em; line-height: 1.25; }
     .card-front .symbol { font-size: 1.9rem; }
     .pick-info { font-size: 14px; }
     .pick-info .count { font-size: 16px; }
@@ -808,10 +807,10 @@
     .header h1 { font-size: 22px; }
     .header p { font-size: 12px; }
     .deck-area { gap: 6px; }
-    .card-front-content { inset: 10px 6px 22px; }
+    .card-front-content { inset: 10px 6px 8px; }
     .card-front .num-banner { font-size: 9px; padding: 1px 7px 2px; letter-spacing: 0.14em; }
-    .card-front .name { font-size: 9px; letter-spacing: 0.02em; line-height: 1.4; }
-    .card-front .name-en { font-size: 6px; letter-spacing: 0.06em; line-height: 1.8; }
+    .card-front .name { font-size: 9px; letter-spacing: 0.01em; line-height: 1.2; }
+    .card-front .name-en { font-size: 6.5px; letter-spacing: 0; line-height: 1.2; }
     .card-front .symbol { font-size: 1.7rem; }
     .pick-hint { font-size: 11px; }
     .pick-badge { width: 18px; height: 18px; font-size: 10.5px; border-width: 1px; }
