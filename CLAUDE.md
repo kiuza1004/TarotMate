@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project shape
 
-Single-file prototype: everything lives in `index.html` (vanilla JS, inline `<style>`, no build step, no dependencies, no package.json). The empty `타로점을 보는 앱/` directory is a leftover folder name and can be ignored.
+Static PWA: app logic lives in `index.html` (vanilla JS, inline `<style>`, no build step, no dependencies, no package.json). PWA shell adds four sibling files: `manifest.webmanifest`, `sw.js`, `icon.svg`, `icon-maskable.svg`. The empty `타로점을 보는 앱/` directory is a leftover folder name and can be ignored.
 
-Run by opening `index.html` directly in a browser, or serve statically (`python -m http.server 8000`). There is no test suite, lint config, or build command.
+Run by serving the directory statically (`python -m http.server 8000`) so the service worker can register — opening `index.html` from `file://` works for the UI but disables the SW. There is no test suite, lint config, or build command.
 
-Deploy = push to `main`; GitHub Pages can serve the root directly.
+Deploy = push to `main`; GitHub Pages can serve the root directly. After deploy, bump `CACHE = "tarotmate-vN"` in `sw.js` whenever any precached file changes so users actually receive the update.
 
 ## Architecture inside `index.html`
 

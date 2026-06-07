@@ -1,0 +1,30 @@
+{
+  "name": "TarotMate — 오늘의 운명",
+  "short_name": "TarotMate",
+  "description": "Rider-Waite 정통 78장 모바일 타로 리딩. 메이저·마이너 전체 덱, 정·역방향 점괘, 종합 해석.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "id": "/tarotmate/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#0f0720",
+  "theme_color": "#1a0b2e",
+  "categories": ["lifestyle", "entertainment"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

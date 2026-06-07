@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TarotMate">
+  <defs>
+    <radialGradient id="bgm" cx="50%" cy="38%">
+      <stop offset="0" stop-color="#3a2068"/>
+      <stop offset="0.55" stop-color="#1a0b2e"/>
+      <stop offset="1" stop-color="#0a0418"/>
+    </radialGradient>
+    <linearGradient id="goldVm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0bc"/>
+      <stop offset="0.3" stop-color="#f3dc8a"/>
+      <stop offset="0.6" stop-color="#c89a3a"/>
+      <stop offset="1" stop-color="#5a3812"/>
+    </linearGradient>
+  </defs>
+
+  <!-- full-bleed background (no rounded corners — OS applies mask) -->
+  <rect width="512" height="512" fill="url(#bgm)"/>
+
+  <g opacity="0.05" fill="none" stroke="#d8a84a" stroke-width="1">
+    <path d="M0 64 L512 64 M0 128 L512 128 M0 192 L512 192 M0 256 L512 256 M0 320 L512 320 M0 384 L512 384 M0 448 L512 448"/>
+    <path d="M64 0 L64 512 M128 0 L128 512 M192 0 L192 512 M256 0 L256 512 M320 0 L320 512 M384 0 L384 512 M448 0 L448 512"/>
+  </g>
+
+  <!-- centered, smaller (safe zone ~ inner 60%) -->
+  <g transform="translate(256 256) scale(0.7)">
+    <circle r="200" fill="none" stroke="#8a6a28" stroke-width="3" opacity="0.85"/>
+    <circle r="178" fill="none" stroke="#8a6a28" stroke-width="2" opacity="0.55"/>
+    <rect x="-140" y="-140" width="280" height="280" fill="none" stroke="#b89248" stroke-width="2.5" opacity="0.7"/>
+    <rect x="-140" y="-140" width="280" height="280" fill="none" stroke="#b89248" stroke-width="2" opacity="0.45" transform="rotate(45)"/>
+    <circle r="100" fill="none" stroke="#8a6a28" stroke-width="2.5" opacity="0.8"/>
+
+    <g stroke="#b89248" stroke-width="2" opacity="0.5">
+      <line x1="-190" y1="0" x2="190" y2="0"/>
+      <line x1="0" y1="-190" x2="0" y2="190"/>
+      <line x1="-134" y1="-134" x2="134" y2="134"/>
+      <line x1="-134" y1="134" x2="134" y2="-134"/>
+    </g>
+
+    <g fill="#b89248">
+      <circle cx="0"    cy="-200" r="6"/>
+      <circle cx="200"  cy="0"    r="6"/>
+      <circle cx="0"    cy="200"  r="6"/>
+      <circle cx="-200" cy="0"    r="6"/>
+      <circle cx="140"  cy="-140" r="4"/>
+      <circle cx="140"  cy="140"  r="4"/>
+      <circle cx="-140" cy="140"  r="4"/>
+      <circle cx="-140" cy="-140" r="4"/>
+    </g>
+
+    <g fill="url(#goldVm)" stroke="#3e2a1a" stroke-width="1">
+      <ellipse cx="0" cy="-44" rx="20" ry="32"/>
+      <ellipse cx="38.1" cy="-22" rx="20" ry="32" transform="rotate(60 38.1 -22)"/>
+      <ellipse cx="38.1" cy="22" rx="20" ry="32" transform="rotate(120 38.1 22)"/>
+      <ellipse cx="0" cy="44" rx="20" ry="32"/>
+      <ellipse cx="-38.1" cy="22" rx="20" ry="32" transform="rotate(60 -38.1 22)"/>
+      <ellipse cx="-38.1" cy="-22" rx="20" ry="32" transform="rotate(120 -38.1 -22)"/>
+    </g>
+    <circle r="22" fill="#3e2a1a"/>
+    <circle r="15" fill="url(#goldVm)"/>
+    <circle r="7"  fill="#fff0bc"/>
+  </g>
+</svg>
