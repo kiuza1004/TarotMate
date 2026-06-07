@@ -1,4 +1,4 @@
-const CACHE = "tarotmate-v1";
+const CACHE = "tarotmate-v2";
 const ASSETS = [
   "./",
   "./index.html",
