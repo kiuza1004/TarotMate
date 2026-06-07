@@ -280,6 +280,7 @@
     cursor: pointer;
     transition: transform var(--transition), opacity var(--transition);
     perspective: 800px;
+    container-type: inline-size;
   }
   .card-inner {
     position: relative;
@@ -370,9 +371,9 @@
   .card-front::before {
     content: "";
     position: absolute;
-    inset: 7px;
-    border: 0.5px solid var(--accent-gold-dim);
-    border-radius: 4px;
+    inset: 5cqw;
+    border: 0.4cqw solid var(--accent-gold-dim);
+    border-radius: 2cqw;
     pointer-events: none;
   }
   .card-front::after { content: none; }
@@ -380,20 +381,20 @@
   /* SVG corner cartouches — tiny, discreet */
   .card-front .corn-orn {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 7cqw;
+    height: 7cqw;
     z-index: 4;
     pointer-events: none;
     opacity: 0.85;
   }
-  .card-front .corn-orn.tl { top: 3px;    left: 3px; }
-  .card-front .corn-orn.tr { top: 3px;    right: 3px;   transform: scaleX(-1); }
-  .card-front .corn-orn.bl { bottom: 3px; left: 3px;    transform: scaleY(-1); }
-  .card-front .corn-orn.br { bottom: 3px; right: 3px;   transform: scale(-1, -1); }
+  .card-front .corn-orn.tl { top: 2cqw;    left: 2cqw; }
+  .card-front .corn-orn.tr { top: 2cqw;    right: 2cqw;   transform: scaleX(-1); }
+  .card-front .corn-orn.bl { bottom: 2cqw; left: 2cqw;    transform: scaleY(-1); }
+  .card-front .corn-orn.br { bottom: 2cqw; right: 2cqw;   transform: scale(-1, -1); }
 
   .card-front-content {
     position: absolute;
-    inset: 14px 10px 12px;
+    inset: 9cqw 7cqw 6cqw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -409,28 +410,28 @@
   .card-front .num-banner {
     position: relative;
     font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
-    font-size: 11px;
+    font-size: 8cqw;
     font-weight: 700;
     letter-spacing: 0.22em;
     color: #1a0f06;
-    padding: 1px 14px 2px;
+    padding: 0.5cqw 10cqw 1cqw;
     background: transparent;
     border: none;
-    min-width: 28px;
+    min-width: 20cqw;
   }
   .card-front .num-banner::before,
   .card-front .num-banner::after {
     content: "";
     position: absolute;
     top: 50%;
-    width: 6px;
-    height: 0.5px;
+    width: 4cqw;
+    height: 0.4cqw;
     background: #1a0f06;
     transform: translateY(-50%);
     opacity: 0.6;
   }
-  .card-front .num-banner::before { left: -2px; }
-  .card-front .num-banner::after  { right: -2px; }
+  .card-front .num-banner::before { left: -1.5cqw; }
+  .card-front .num-banner::after  { right: -1.5cqw; }
 
   /* Scene SVG panel — framed in a clean off-white matte */
   .scene {
@@ -460,11 +461,11 @@
     position: relative;
     flex-shrink: 0;
     width: 100%;
-    padding: 4px 4px 5px;
+    padding: 2.5cqw 2.5cqw 3cqw;
     background: transparent;
     border: none;
-    border-top: 0.5px solid rgba(26, 15, 6, 0.4);
-    border-bottom: 0.5px solid rgba(26, 15, 6, 0.4);
+    border-top: 0.4cqw solid rgba(26, 15, 6, 0.4);
+    border-bottom: 0.4cqw solid rgba(26, 15, 6, 0.4);
     border-radius: 0;
     overflow: visible;
   }
@@ -476,23 +477,23 @@
   .card-front .name-banner::after  { display: none; }
   .card-front .name {
     font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
-    font-size: 11px;
+    font-size: 8cqw;
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.2;
     color: #1a0f06;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     word-break: keep-all;
     text-transform: none;
   }
   .card-front .name-en {
     display: block;
-    font-size: 8.5px;
+    font-size: 6cqw;
     font-weight: 600;
     font-style: normal;
     color: #1a0f06;
-    margin-top: 2px;
-    line-height: 1.25;
-    letter-spacing: 0.02em;
+    margin-top: 1.5cqw;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
     opacity: 0.9;
     text-transform: uppercase;
     word-break: keep-all;
@@ -786,15 +787,10 @@
     margin-top: 8px;
   }
 
-  /* Small screen adjustments */
+  /* Small screen adjustments — card internals now scale via cqw (container queries) */
   @media (max-width: 400px) {
     .app { padding: 20px 12px 36px; gap: 16px; }
     .deck-area { grid-template-columns: repeat(3, 1fr); gap: 7px; }
-    .card-front-content { inset: 12px 8px 10px; }
-    .card-front .num-banner { font-size: 10px; padding: 1px 10px 2px; letter-spacing: 0.18em; }
-    .card-front .name { font-size: 10px; letter-spacing: 0.03em; line-height: 1.25; }
-    .card-front .name-en { font-size: 7.5px; letter-spacing: 0.01em; line-height: 1.25; }
-    .card-front .symbol { font-size: 1.9rem; }
     .pick-info { font-size: 14px; }
     .pick-info .count { font-size: 16px; }
     .pick-hint { font-size: 11.5px; }
@@ -807,11 +803,6 @@
     .header h1 { font-size: 22px; }
     .header p { font-size: 12px; }
     .deck-area { gap: 6px; }
-    .card-front-content { inset: 10px 6px 8px; }
-    .card-front .num-banner { font-size: 9px; padding: 1px 7px 2px; letter-spacing: 0.14em; }
-    .card-front .name { font-size: 9px; letter-spacing: 0.01em; line-height: 1.2; }
-    .card-front .name-en { font-size: 6.5px; letter-spacing: 0; line-height: 1.2; }
-    .card-front .symbol { font-size: 1.7rem; }
     .pick-hint { font-size: 11px; }
     .pick-badge { width: 18px; height: 18px; font-size: 10.5px; border-width: 1px; }
     .interpret-card { padding: 14px 12px; }
