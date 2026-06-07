@@ -394,11 +394,12 @@
 
   .card-front-content {
     position: absolute;
-    inset: 9cqw 7cqw 6cqw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    /* Grid with fixed name slot — guarantees bottom never clips */
+    inset: 6cqw 6cqw 3cqw;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    row-gap: 2cqw;
+    justify-items: center;
     text-align: center;
     z-index: 2;
   }
@@ -414,10 +415,10 @@
     font-weight: 700;
     letter-spacing: 0.22em;
     color: #1a0f06;
-    padding: 0.5cqw 10cqw 1cqw;
+    padding: 0.5cqw 0 1cqw;
     background: transparent;
     border: none;
-    min-width: 20cqw;
+    width: max-content;
   }
   .card-front .num-banner::before,
   .card-front .num-banner::after {
@@ -430,16 +431,15 @@
     transform: translateY(-50%);
     opacity: 0.6;
   }
-  .card-front .num-banner::before { left: -1.5cqw; }
-  .card-front .num-banner::after  { right: -1.5cqw; }
+  .card-front .num-banner::before { left: -5cqw; }
+  .card-front .num-banner::after  { right: -5cqw; }
 
   /* Scene SVG panel — framed in a clean off-white matte */
   .scene {
     position: relative;
-    flex: 1;
     width: 100%;
+    min-height: 0;          /* allow grid 1fr to shrink */
     display: flex;
-    margin: 5px 0 6px;
     padding: 2px;
     background: #fbf6e6;
     border: 0.5px solid #1a0f06;
@@ -459,15 +459,20 @@
   /* Name banner — classic RW caps under illustration */
   .card-front .name-banner {
     position: relative;
-    flex-shrink: 0;
     width: 100%;
-    padding: 2.5cqw 2.5cqw 3cqw;
+    /* Reserved slot — fits Korean + up to 2 lines EN + 2-line bottom buffer */
+    min-height: 36cqw;
+    padding: 2.5cqw 1.5cqw 14cqw;
     background: transparent;
     border: none;
     border-top: 0.4cqw solid rgba(26, 15, 6, 0.4);
     border-bottom: 0.4cqw solid rgba(26, 15, 6, 0.4);
     border-radius: 0;
     overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
   .card-front .name-banner::before,
   .card-front .name-banner::after {
@@ -496,7 +501,7 @@
     letter-spacing: 0.01em;
     opacity: 0.9;
     text-transform: uppercase;
-    word-break: keep-all;
+    word-break: break-word;
     overflow-wrap: anywhere;
     max-width: 100%;
   }
@@ -1416,20 +1421,368 @@
 
   const POSITIONS = ["과거", "현재", "미래"];
 
-  const POSITION_LEADS = {
-    "과거": {
-      upright: "지나온 시간이 남긴 흔적이 이렇게 속삭입니다.",
-      reversed: "과거의 미해결이 여전히 당신을 붙잡고 있습니다."
+  // ============================================
+  // 1b. READING ENGINE — variety & freshness (large fragment pools)
+  // ============================================
+
+  // RNG: cryptographically strong; falls back to Math.random if needed
+  const RNG = {
+    _buf(n) {
+      const b = new Uint32Array(n);
+      if (typeof crypto !== "undefined" && crypto.getRandomValues) crypto.getRandomValues(b);
+      else for (let i = 0; i < n; i++) b[i] = (Math.random() * 0x100000000) >>> 0;
+      return b;
     },
-    "현재": {
-      upright: "지금 당신을 둘러싸고 흐르는 기운입니다.",
-      reversed: "지금 당신 앞을 가로막고 있는 그림자가 있습니다."
-    },
-    "미래": {
-      upright: "다가올 시간이 당신에게 건네는 메시지입니다.",
-      reversed: "다가올 시간이 보내는 조용한 경고가 있습니다."
+    int(maxExcl) { return this._buf(1)[0] % maxExcl; },
+    pick(arr)    { return arr[this.int(arr.length)]; },
+    chance(p)    { return this._buf(1)[0] / 0x100000000 < p; },
+    shuffle(arr) {
+      const a = [...arr], r = this._buf(a.length);
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = r[i] % (i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
   };
+
+  // Reading history (localStorage) — prevents recent repeats
+  const HISTORY = {
+    KEY: "tarotmate.history.v1",
+    MAX: 16,
+    load() { try { return JSON.parse(localStorage.getItem(this.KEY) || "[]"); } catch { return []; } },
+    save(a) { try { localStorage.setItem(this.KEY, JSON.stringify(a.slice(-this.MAX))); } catch {} },
+    push(h) { const a = this.load(); a.push(h); this.save(a); },
+    has(h)  { return this.load().includes(h); },
+    hashOf(triad) {
+      return triad.map(r => `${r.card.num}.${r.card.suit || "M"}.${r.isReversed ? "R" : "U"}`).join("~");
+    }
+  };
+
+  // Triad builder — picks orientations with reroll for freshness, ≈35% reversed.
+  // Cards lacking reversed copy (e.g. current minor arcana stubs) stay upright.
+  function buildTriad(pickIndices) {
+    const canReverse = (c) => !!(c.reversedStory && c.reversed);
+    let triad = null;
+    for (let attempt = 0; attempt < 6; attempt++) {
+      triad = pickIndices.map(idx => {
+        const card = state.shuffledDeck[idx];
+        return { card, isReversed: canReverse(card) && RNG.chance(0.35) };
+      });
+      if (!HISTORY.has(HISTORY.hashOf(triad))) break;
+    }
+    HISTORY.push(HISTORY.hashOf(triad));
+    return triad;
+  }
+
+  // Question domain detection — tilts vocabulary toward user's topic
+  const Q_DOMAINS = [
+    { id: "love",   words: ["사랑","연애","연인","짝사랑","이별","애인","결혼","고백","썸","좋아","마음","호감","재회","연애운"] },
+    { id: "work",   words: ["일","직장","취업","이직","면접","승진","상사","사업","프로젝트","업무","커리어","퇴사","입사"] },
+    { id: "money",  words: ["돈","재정","투자","재물","주식","수입","월급","빚","대출","돈벌","경제","코인","부동산"] },
+    { id: "health", words: ["건강","몸","아파","치료","수술","질병","컨디션","피로","병원"] },
+    { id: "social", words: ["친구","관계","인간관계","동료","갈등","사이","우정","모임","가족"] },
+    { id: "study",  words: ["공부","시험","학업","진학","수능","자격","합격","논문","성적","과제"] }
+  ];
+  function detectDomain(q) {
+    if (!q) return "general";
+    const score = {};
+    for (const d of Q_DOMAINS) for (const w of d.words)
+      if (q.includes(w)) score[d.id] = (score[d.id] || 0) + 1;
+    const top = Object.entries(score).sort((a,b) => b[1]-a[1])[0];
+    return top ? top[0] : "general";
+  }
+
+  // Position lead variants — 6 × 3 × 2 = 36 phrasings
+  const POSITION_LEAD_VARIANTS = {
+    "과거": {
+      upright: [
+        "지나온 시간이 남긴 흔적이 이렇게 속삭입니다.",
+        "거슬러 올라간 자리에서 한 무늬가 또렷이 떠오릅니다.",
+        "과거의 페이지가 바람에 한 장 펄럭이며 이야기를 시작합니다.",
+        "지나간 일들이 비로소 자신의 의미를 드러냅니다.",
+        "오래 잠들어 있던 한 장면이 가만히 눈을 뜹니다.",
+        "어제의 강물이 오늘의 자갈 위에 이런 자국을 남겼습니다."
+      ],
+      reversed: [
+        "지나온 길에서 아직 매듭짓지 못한 무엇이 손을 흔듭니다.",
+        "과거의 미해결이 여전히 그림자처럼 따라오고 있습니다.",
+        "묻어 둔 줄 알았던 한 감정이 가만히 표면으로 떠오릅니다.",
+        "지난 결정 하나가 뒤늦게 거꾸로 빛을 비추고 있습니다.",
+        "끝났다고 믿은 한 장(章)이, 실은 아직 닫히지 않았습니다.",
+        "지나온 자리의 한구석이 여전히 당신의 발목을 가만히 잡고 있습니다."
+      ]
+    },
+    "현재": {
+      upright: [
+        "지금 이 순간 당신의 발치에 놓인 표지는 이렇습니다.",
+        "오늘의 풍경을 한 컷 잘라 보여 드리면 이렇습니다.",
+        "현재의 결을 손바닥에 올려 보면 이런 무게입니다.",
+        "바로 이 자리에서 가장 또렷이 울리는 음은 이렇습니다.",
+        "지금 일어나는 일들의 한가운데에 이 한 장이 놓여 있습니다.",
+        "오늘이 당신에게 건네는 첫 한마디는 바로 이것입니다."
+      ],
+      reversed: [
+        "지금 흐름이 비스듬히 기울어 평소와 다른 방향을 가리킵니다.",
+        "현재의 풍경에 한 켜의 그늘이 가만히 드리워 있습니다.",
+        "겉으로 잔잔한 듯해도, 속으로 작은 회오리가 돌고 있습니다.",
+        "오늘의 한 컷이 평소의 결과 다르게 흔들리고 있습니다.",
+        "잠시 멈추어 풍경을 거꾸로 한 번 들여다보아야 할 시기입니다.",
+        "지금 당신을 둘러싼 음이 한 음 낮게 가라앉아 울리고 있습니다."
+      ]
+    },
+    "미래": {
+      upright: [
+        "곧 다가올 풍경의 첫 인상은 이렇습니다.",
+        "앞으로 펼쳐질 페이지의 머리글이 이 한 줄로 시작됩니다.",
+        "수평선 너머에서 천천히 다가오는 형상은 이렇습니다.",
+        "다가올 한 장(章)의 분위기는 이런 색입니다.",
+        "조용히 다가오는 약속 하나가 이 자리에 놓여 있습니다.",
+        "곧 당신의 문을 두드릴 손님의 발소리가 이렇게 들립니다."
+      ],
+      reversed: [
+        "앞으로의 길에 한 굽이 예상치 못한 모퉁이가 놓여 있습니다.",
+        "다가올 페이지에 작은 그늘이 덧칠되어 있습니다.",
+        "곧 오는 무엇은, 처음 보이는 모습과 다를 수 있습니다.",
+        "미래의 한 자락이 거꾸로 한 번 흔들렸다 자리잡을 것입니다.",
+        "수평선 너머에서, 한 번쯤 마음을 다잡아야 할 풍경이 다가옵니다.",
+        "조용히 다가오는 약속에 한 줄의 단서가 빠져 있어 보입니다."
+      ]
+    }
+  };
+  function pickLead(position, isReversed) {
+    return RNG.pick(POSITION_LEAD_VARIANTS[position][isReversed ? "reversed" : "upright"]);
+  }
+  // Backward-compat alias
+  const POSITION_LEADS = POSITION_LEAD_VARIANTS;
+
+  // Element analysis
+  function elementOf(card) {
+    if (!card.suit) return "ether";
+    return { w: "fire", c: "water", s: "air", p: "earth" }[card.suit];
+  }
+  function rankNum(r) {
+    if (!r.card.suit) return r.card.num;
+    const id = r.card.rank;
+    if (id === "A") return 1;
+    if (id === "P") return 11;
+    if (id === "N") return 12;
+    if (id === "Q") return 13;
+    if (id === "K") return 14;
+    return parseInt(id, 10);
+  }
+  function analyzeTriad(triad) {
+    const majors = triad.filter(r => !r.card.suit).length;
+    const minors = 3 - majors;
+    const reversed = triad.filter(r => r.isReversed).length;
+    const suits = { w:0, c:0, s:0, p:0 };
+    triad.forEach(r => { if (r.card.suit) suits[r.card.suit]++; });
+    const elements = { fire:suits.w, water:suits.c, air:suits.s, earth:suits.p, ether:majors };
+    const dominantElement = Object.entries(elements).sort((a,b)=>b[1]-a[1])[0][0];
+    const sum = triad.reduce((s, r) => s + rankNum(r), 0);
+    const lifePath = ((sum - 1) % 9) + 1;
+    const courtCount = triad.filter(r => r.card.suit && ["P","N","Q","K"].includes(r.card.rank)).length;
+    return { majors, minors, reversed, suits, elements, dominantElement, sum, lifePath, courtCount };
+  }
+
+  // Connector phrases between consecutive cards in narrative arc
+  const CONNECTORS_SAME = [
+    "그리고 그 결이 그대로 다음 장에 이어집니다.",
+    "이 흐름은 멈추지 않고 다음 장면으로 이월됩니다.",
+    "같은 결의 음이 한 박자 더 길게 울립니다.",
+    "그 음표는 다음 마디까지 끊김 없이 이어집니다."
+  ];
+  const CONNECTORS_FLIP = [
+    "그러나 다음 장에서 그 흐름은 한 차례 뒤집힙니다.",
+    "곧이어 풍경의 명암이 바뀝니다.",
+    "다음 장면에서 그 결이 다른 방향으로 굽이칩니다.",
+    "그 결을 받아 다음 자리는 한 차례 색을 갈아엽니다."
+  ];
+
+  // Title pool
+  const TITLES = {
+    allMajor: [
+      "운명의 큰 별이 정렬됩니다",
+      "삶의 큰 줄기가 새로 짜입니다",
+      "보이지 않는 손이 페이지를 넘깁니다",
+      "운명의 세 별이 같은 하늘에 떴습니다"
+    ],
+    allMinor: [
+      "일상의 결이 풀려갑니다",
+      "오늘의 자잘한 매듭이 풀립니다",
+      "발치에 놓인 사건들이 자기 자리를 찾습니다",
+      "손에 잡히는 결이 또렷이 드러납니다"
+    ],
+    mixed: [
+      "큰 흐름과 일상이 만납니다",
+      "별의 결과 땅의 결이 한 자리에서 겹칩니다",
+      "보이지 않는 손과 보이는 손이 같이 움직입니다",
+      "운명의 음표와 일상의 박자가 화음을 이룹니다"
+    ],
+    reversedHeavy: [
+      "한 박자 멈추어야 할 시기입니다",
+      "흐름이 한 번 굽이쳐 돌아갑니다",
+      "익숙한 결을 다시 살펴야 할 시기입니다",
+      "거꾸로 비치는 빛이 진짜 모양을 드러냅니다"
+    ]
+  };
+
+  // Opening lines pool
+  const OPENERS = {
+    allMajor: [
+      "세 장 모두 메이저 아르카나입니다. 운명이 직접 펜을 들어 새 장(章)을 여는 시기입니다.",
+      "세 장이 모두 큰 별입니다. 일상의 자잘함보다 보이지 않는 큰 손이 풍경을 움직이고 있습니다.",
+      "메이저 아르카나 세 장이 한자리에 모였습니다. 평소라면 흘려보낼 한순간이 이번에는 깊고 오래 울립니다.",
+      "큰 운의 별 셋이 같은 하늘에 떠 있습니다. 이 시기의 결정은 가벼이 흘려보내선 안 됩니다."
+    ],
+    allMinor: [
+      "세 장 모두 마이너 아르카나입니다. 거창한 종소리가 아니라, 손에 잡히는 일상의 매듭들이 풀려갑니다.",
+      "오늘의 점괘는 일상의 결로만 짜여 있습니다. 멀리 있는 큰 그림보다 책상 위의 한 문제부터 살피세요.",
+      "마이너 아르카나가 세 자리를 모두 차지했습니다. 답은 어제와 오늘과 내일의 작은 손길에 있습니다.",
+      "큰 운의 별은 잠시 무대 뒤로 물러나 있습니다. 무대 위에 있는 것은 오롯이 당신의 매일입니다."
+    ],
+    mixed: [
+      "큰 별과 작은 결이 한 자리에 섞였습니다. 운명의 굵직한 줄기와 일상의 가는 결이 함께 움직입니다.",
+      "메이저와 마이너가 손을 잡았습니다. 보이지 않는 큰 손이 보이는 한 손을 통해 움직이려 합니다.",
+      "운명의 음표 위에 일상의 박자가 얹혔습니다. 둘 중 하나만 보면 곡이 어긋납니다.",
+      "큰 흐름과 자잘한 사건이 같은 페이지에 적혀 있습니다. 둘은 어긋난 신호가 아니라, 한 곡의 다른 음역입니다."
+    ]
+  };
+
+  // Element-tone lines
+  const ELEMENT_LINES = {
+    fire:  [
+      "불의 기운이 가장 짙게 흐릅니다. 머뭇거리는 사이에 길은 식어 버립니다.",
+      "타오르는 결이 우세합니다. 식기 전에 손을 뻗어야 합니다.",
+      "열기가 한가운데에 있습니다. 적당한 온도를 지키며 태우세요."
+    ],
+    water: [
+      "물의 결이 가장 깊게 차오릅니다. 감정의 수위를 정확히 읽어야 합니다.",
+      "흐름은 부드럽되 깊습니다. 거스르지 말고 결을 타세요.",
+      "내면의 호수가 잔잔히 출렁입니다. 그 떨림이 가장 정직한 답입니다."
+    ],
+    air: [
+      "바람의 결이 가장 또렷이 붑니다. 판단과 결단이 핵심입니다.",
+      "공기의 흐름이 길을 가릅니다. 모호함을 끊어내는 한 마디가 필요합니다.",
+      "사고의 결이 우세합니다. 머리로 정리해야 마음이 안정됩니다."
+    ],
+    earth: [
+      "땅의 기운이 가장 단단히 뿌리내립니다. 구체적인 손길이 답입니다.",
+      "흙의 결이 우세합니다. 손에 잡히는 일부터 매듭지으세요.",
+      "기반과 결실의 결이 도드라집니다. 오늘의 한 줄을 단단히 쓰세요."
+    ],
+    ether: [
+      "보이지 않는 큰 기운이 무대 뒤에서 움직이고 있습니다.",
+      "운명의 결이 짙어 일상의 척도로는 가늠하기 어렵습니다.",
+      "어떤 큰 손이 당신의 어깨를 가만히 두드리고 있습니다."
+    ]
+  };
+
+  // Reversed-count modifier
+  const REVERSED_LINES = {
+    0: "세 장이 모두 바른 방향으로 놓여, 흐름은 평탄합니다.",
+    1: "한 장이 거꾸로 놓여, 한 자리에서 짧은 매듭을 풀어야 합니다.",
+    2: "두 장이 거꾸로 놓여, 익숙한 길에서 잠시 비켜설 필요가 있습니다.",
+    3: "세 장 모두 거꾸로 놓였습니다. 흐름 자체를 다시 바라볼 시기입니다."
+  };
+
+  // Numerology lifepath insights (1..9)
+  const LIFEPATH_LINES = {
+    1: "수의 결은 ‘시작’으로 모입니다. 첫 한 발의 방향이 길게 메아리칩니다.",
+    2: "수의 결은 ‘짝’으로 모입니다. 혼자보다 둘이 만나는 자리에서 답이 떠오릅니다.",
+    3: "수의 결은 ‘표현’으로 모입니다. 입 밖으로 꺼낸 한 마디가 풍경을 바꿉니다.",
+    4: "수의 결은 ‘기반’으로 모입니다. 단단한 토대 위에서만 다음이 세워집니다.",
+    5: "수의 결은 ‘변화’로 모입니다. 익숙한 자리에서 한 걸음 옮겨야 합니다.",
+    6: "수의 결은 ‘조화’로 모입니다. 책임과 사랑이 한 자리에서 만납니다.",
+    7: "수의 결은 ‘성찰’로 모입니다. 잠시 안을 들여다보는 시간이 필요합니다.",
+    8: "수의 결은 ‘결실’로 모입니다. 그동안 쌓은 무게가 형태를 갖춥니다.",
+    9: "수의 결은 ‘완성’으로 모입니다. 한 장(章)이 닫히고 다음이 시작됩니다."
+  };
+
+  // Court card asides — when a court card appears
+  const COURT_ASIDES = [
+    "한 사람의 얼굴이 점괘 속에 또렷이 떠오릅니다. 그가 누구인지는 곧 알아채게 될 것입니다.",
+    "특정한 인물의 결이 흐름에 섞여 있습니다. 그 사람의 말 한마디를 흘려듣지 마세요.",
+    "당신을 지나가는 사람들 가운데 한 명이 이번 흐름의 중요한 매듭입니다."
+  ];
+
+  // Domain-tailored advice
+  const DOMAIN_ADVICE = {
+    love: [
+      "사랑의 결에서는 솔직함이 가장 큰 무기입니다. 돌려 말하지 마세요. 가장 짧은 한 문장이 가장 멀리 닿습니다.",
+      "관계에서는 침묵보다 한 박자 빠른 표현이 답입니다. 망설이는 사이에 마음의 온도가 식어 버립니다.",
+      "곁에 있는 사람의 말투가 평소와 다른 결이라면, 그 자리에서 한 번 더 물어보세요. 사랑은 묻는 사람의 편입니다.",
+      "혼자 결론짓지 마세요. 사랑은 한 사람이 만드는 그림이 아니라 두 사람이 함께 쓰는 한 문장입니다.",
+      "지금은 ‘완벽한 타이밍’을 기다리지 마세요. 어설픈 오늘이 완벽한 내일보다 큽니다."
+    ],
+    work: [
+      "일의 결에서는 ‘이미 알고 있는 답’을 미루지 않는 것이 핵심입니다. 미룬 결정이 다음 일정을 흔듭니다.",
+      "직장에서는 한 사람의 말보다 시스템의 결을 먼저 살피세요. 사람을 탓하는 자리에 답이 없을 때가 많습니다.",
+      "한 가지 일을 더 잘하기보다, 잘하지 않아도 되는 일을 줄이는 편이 지금은 더 큰 효과를 냅니다.",
+      "업무의 결에서는 ‘다음 한 통의 메시지’를 미루지 않는 것이 가장 빠른 길입니다.",
+      "지금은 결과를 증명하기보다, 과정을 기록해 두세요. 기록은 결국 가장 강한 말이 됩니다."
+    ],
+    money: [
+      "돈의 결에서는 ‘들어오는 곳’보다 ‘새는 곳’을 먼저 보세요. 통장의 균열은 늘 작은 구멍에서 시작됩니다.",
+      "재정의 흐름은 결단보다 기록에서 정돈됩니다. 오늘의 한 줄 가계부가 한 달 뒤의 풍경을 바꿉니다.",
+      "투자의 결에서는 ‘잘 보이는 기회’를 한 박자 의심하세요. 가장 화려한 자리에 가장 깊은 함정이 놓이곤 합니다.",
+      "지금은 크게 벌기보다 적게 잃는 자세가 운을 키웁니다. 보수적인 한 수가 결국 더 멀리 갑니다.",
+      "돈의 결은 ‘속도’가 아니라 ‘방향’의 문제입니다. 빠르게 가지 말고, 옳게 가세요."
+    ],
+    health: [
+      "몸의 결에서는 ‘평소와 다른 신호’를 무시하지 마세요. 작은 떨림이 큰 흐름의 머리말일 수 있습니다.",
+      "건강의 결은 의지보다 습관에서 결정됩니다. 오늘 한 시간 일찍 자는 일이 한 달 뒤를 바꿉니다.",
+      "지금은 ‘덜 하는 일’이 ‘더 하는 일’보다 효과적입니다. 몸의 음량을 잠시 한 단계 낮춰 보세요.",
+      "몸이 보내는 신호를 머리로 해석하지 말고, 일단 멈춰서 들으세요. 몸은 거짓말을 하지 않습니다.",
+      "정성을 들여 한 끼를 천천히 먹는 일이, 지금은 가장 큰 처방입니다."
+    ],
+    social: [
+      "관계의 결에서는 ‘옳음’보다 ‘다정함’이 멀리 갑니다. 이기는 자리가 늘 행복한 자리는 아닙니다.",
+      "인간관계에서는 한 발 물러서는 자리가 한 발 다가서는 자리보다 더 큰 영향을 줍니다.",
+      "갈등의 결에서는 가장 먼저 말을 꺼내는 사람이 가장 멀리 갑니다. 침묵은 거리를 키울 뿐입니다.",
+      "지금은 곁의 사람을 ‘설득’하기보다 ‘이해’해 보세요. 이해받은 사람만이 변합니다.",
+      "오래 안 본 한 사람에게 짧은 안부 한 줄을 건네 보세요. 그 한 줄이 뜻밖에 큰 결을 만듭니다."
+    ],
+    study: [
+      "공부의 결에서는 ‘많이 하기’보다 ‘맞게 하기’가 답입니다. 방향이 맞다면 속도는 따라옵니다.",
+      "시험의 결은 의지보다 루틴에서 결정됩니다. 오늘의 두 시간이 한 달 뒤의 자리를 만듭니다.",
+      "학업에서는 모르는 것을 그날 안으로 묻어두지 마세요. 미룬 한 문제가 다음 페이지를 막습니다.",
+      "지금은 한 권을 열 번 보는 자리가, 열 권을 한 번 훑는 자리보다 깊습니다.",
+      "공부의 결은 의자에 앉는 시간보다 ‘앉기 전 5분’에서 결정됩니다. 시작의 의식을 단단히 하세요."
+    ],
+    general: [
+      "지금은 한 박자 천천히 가는 자리가, 두 박자 앞서가는 자리보다 멀리 갑니다.",
+      "결정을 미루는 것도 결정입니다. 다만 그 미룸이 어디로 향하는지 의식하세요.",
+      "오늘 할 수 있는 가장 작은 일을 단단히 해두세요. 운은 작은 매듭 위에 내려앉습니다.",
+      "곁에 이미 있는 것을 한 번 더 다정히 보세요. 멀리서 답을 찾던 시선이 가까이서 답을 발견할 것입니다.",
+      "흔들릴 때는 머리보다 가슴이 먼저 내놓는 답을 신뢰하세요. 머리는 늘 한 박자 늦습니다."
+    ]
+  };
+
+  // Universal closers
+  const CLOSERS = [
+    "오늘의 점괘는 여기까지입니다. 다음 한 걸음은 당신의 것입니다.",
+    "별빛은 길을 비출 뿐, 발을 내딛는 사람은 언제나 당신입니다.",
+    "운명은 정해진 길이 아니라, 매일의 선택이 짜는 무늬입니다.",
+    "이 한 장의 점괘를 마음 한구석에 가만히 접어 두세요. 필요할 때 다시 펼쳐질 것입니다.",
+    "오늘의 카드가 건넨 한 마디를, 내일의 발끝에 가만히 얹어 보세요.",
+    "어떤 길을 고르든, 당신은 이미 자신만의 빛을 안고 걷고 있습니다."
+  ];
+
+  // Compose past→present→future narrative arc
+  function composeArc(triad) {
+    const [p, c, f] = triad;
+    const named = r => `<strong>${r.card.name}${r.isReversed ? "(역)" : ""}</strong>`;
+    const story = r => (r.isReversed ? r.card.reversedStory : r.card.uprightStory)
+                        .split(". ")[0].replace(/\.?$/, "") + ".";
+    const conn1 = p.isReversed === c.isReversed ? RNG.pick(CONNECTORS_SAME) : RNG.pick(CONNECTORS_FLIP);
+    const conn2 = c.isReversed === f.isReversed ? RNG.pick(CONNECTORS_SAME) : RNG.pick(CONNECTORS_FLIP);
+    return (
+      `과거의 자리에는 ${named(p)}이(가) 놓여 있습니다. ${story(p)} ${conn1}<br><br>` +
+      `현재의 자리에서 ${named(c)}이(가) 그 결을 받습니다. ${story(c)} ${conn2}<br><br>` +
+      `미래의 자리에는 ${named(f)}이(가) 기다리고 있습니다. ${story(f)}`
+    );
+  }
 
   const ROMAN = {
     0: "0", 1: "I", 2: "II", 3: "III", 4: "IV", 5: "V",
@@ -3027,10 +3380,8 @@
   function goToResult() {
     $("#question-echo-2").textContent = "Q. " + state.question;
 
-    state.results = state.picked.map(idx => ({
-      card: state.shuffledDeck[idx],
-      isReversed: false
-    }));
+    // Build triad with randomized orientation + freshness reroll
+    state.results = buildTriad(state.picked);
 
     // Render cards
     const resultCards = $("#result-cards");
@@ -3056,13 +3407,16 @@
       return cardEl;
     });
 
-    // Render interpretations
+    // Render per-card interpretations (orientation-aware, varied leads)
     const interpretList = $("#interpret-list");
     interpretList.innerHTML = "";
     state.results.forEach((r, i) => {
       const card = r.card;
       const position = POSITIONS[i];
-      const lead = POSITION_LEADS[position].upright;
+      const lead = pickLead(position, r.isReversed);
+      const keywords = r.isReversed ? card.reversed : card.upright;
+      const story = r.isReversed ? card.reversedStory : card.uprightStory;
+      const nameTag = card.name + (r.isReversed ? "(역)" : "");
 
       const div = document.createElement("div");
       div.className = "interpret-card";
@@ -3070,17 +3424,17 @@
         <div class="pos-row">
           <span class="pos">${position}</span>
         </div>
-        <div class="card-name">${card.name}</div>
+        <div class="card-name">${nameTag}</div>
         <div class="card-name-en">${card.nameEn}</div>
-        <div class="keywords">${card.upright}</div>
+        <div class="keywords">${keywords}</div>
         <div class="lead">${lead}</div>
-        <div class="prophecy">${card.uprightStory}</div>
+        <div class="prophecy">${story}</div>
       `;
       interpretList.appendChild(div);
     });
 
-    // Build overall prophecy
-    const overall = buildOverallProphecy(state.results);
+    // Build overall prophecy (engine-driven)
+    const overall = buildOverallProphecy(state.results, state.question);
     const overallEl = $("#overall-prophecy");
     $("#overall-title").textContent = overall.title;
     $("#overall-body").innerHTML = overall.body;
@@ -3107,77 +3461,50 @@
   }
 
   // ============================================
-  // 9. OVERALL PROPHECY SYNTHESIS
+  // 9. OVERALL PROPHECY SYNTHESIS (engine-driven)
   // ============================================
-  function buildOverallProphecy(results) {
-    const majors = results.filter(r => !r.card.suit).length;
-    const minors = 3 - majors;
+  function buildOverallProphecy(results, question) {
+    const a = analyzeTriad(results);
+    const domain = detectDomain(question || "");
 
-    // 마이너 슈트 분포 → 톤 결정
-    const suitCounts = { w: 0, c: 0, s: 0, p: 0 };
-    results.forEach(r => { if (r.card.suit) suitCounts[r.card.suit]++; });
-    const dominant = Object.entries(suitCounts).sort((a, b) => b[1] - a[1])[0];
-    const SUIT_TONES = {
-      w: { name: "완드(불)",   domain: "열정·창조·실행의 영역",   verb: "타오릅니다" },
-      c: { name: "컵(물)",     domain: "감정·관계·내면의 영역",   verb: "흐릅니다"   },
-      s: { name: "검(바람)",   domain: "사고·판단·결단의 영역",   verb: "베어 갑니다" },
-      p: { name: "펜타클(땅)", domain: "물질·기반·결실의 영역",   verb: "쌓여 갑니다" }
-    };
+    // Title: structure first, but tilt to reversed-heavy if 2+ reversed
+    let titleKey;
+    if (a.reversed >= 2)       titleKey = "reversedHeavy";
+    else if (a.majors === 3)   titleKey = "allMajor";
+    else if (a.minors === 3)   titleKey = "allMinor";
+    else                       titleKey = "mixed";
+    const title = RNG.pick(TITLES[titleKey]);
 
-    let title, body, advice;
+    // Opener by structure
+    let openerKey;
+    if (a.majors === 3)      openerKey = "allMajor";
+    else if (a.minors === 3) openerKey = "allMinor";
+    else                     openerKey = "mixed";
+    const opener = RNG.pick(OPENERS[openerKey]);
 
-    if (majors === 3) {
-      title = "운명의 큰 별이 정렬됩니다";
-      body =
-        "세 장 모두 메이저 아르카나입니다. 우주가 직접 펜을 들어 당신의 이름이 적힌 새로운 장(章)을 열고 있는 시기입니다. " +
-        "지금 마주한 일들은 단순한 사건이 아니라, 이 생애의 큰 줄기를 다시 짜내는 매듭들입니다. " +
-        "그래서 평소라면 무심히 스쳐 보냈을 만남 하나, 결정 하나, 미루어 둔 한 마디가 뜻밖에 깊고 오래가는 파장을 만들어 냅니다." +
-        "<br><br>" +
-        "이 시기에는 마치 멀리서 보이지 않는 자석이 당신을 끌어당기듯, 어떤 길은 자꾸만 가까워지고 어떤 문은 천천히 그러나 분명하게 닫혀 갑니다. " +
-        "억지로 거스르기보다, 그 흐름의 결을 가만히 읽고 손에 쥔 것을 한 번쯤 다시 살펴 보세요. " +
-        "감추어 둔 진심, 미루어 둔 결심, 두려워서 외면해 온 가능성 — 이 셋 가운데 하나는 곧 표면 위로 떠오를 것입니다. " +
-        "그것을 마주하는 태도가, 다음 장의 첫 줄을 어떤 문장으로 쓸지를 결정합니다.";
-      advice =
-        "<strong>조언</strong> — 사소해 보이는 결정이라도 가볍게 흘려보내지 마세요. 지금 내딛는 한 걸음은 시간이 흐른 뒤에 가장 오래 메아리치는 발자국이 됩니다. " +
-        "흔들릴 때는 머리보다 가슴이 먼저 내놓는 답을 신뢰하고, 이미 알고 있던 진실을 더는 미루지 마세요. " +
-        "운명은 등을 떠밀지 않습니다. 다만 문을 열어 둔 채, 당신이 두려움을 내려놓고 들어오기를 조용히 기다릴 뿐입니다.";
-    } else if (minors === 3) {
-      const tone = SUIT_TONES[dominant[0]];
-      const tied = dominant[1] < 2;
-      const suitLine = tied
-        ? "세 슈트가 고르게 흩어져, 어느 한 영역이 아니라 일상 전반의 자잘한 결들이 한꺼번에 움직이고 있습니다."
-        : `특히 ${tone.name}의 기운이 두드러져, ${tone.domain}에서 가장 또렷한 신호가 ${tone.verb}.`;
-      title = "일상의 결이 풀려갑니다";
-      body =
-        "세 장 모두 마이너 아르카나입니다. 거창한 운명의 종소리가 아니라, 매일 마주치는 사람·말·돈·일·습관의 작은 매듭들이 지금 하나씩 풀려 가고 있습니다. " +
-        "단 한 번에 인생을 뒤집을 사건은 보이지 않습니다. 대신, 손에 잡히고 발로 디딜 수 있는 구체적인 단서들이 줄지어 도착해 있습니다." +
-        "<br><br>" +
-        suitLine + " " +
-        "이런 시기에는 멀리 있는 큰 그림을 다시 그리려 애쓰기보다, 오늘 책상 위에 놓인 문제부터 차분히 풀어 가는 편이 결국 가장 빠른 길이 됩니다. " +
-        "한 통의 메시지를 미루지 않는 일, 한 번의 사과를 늦추지 않는 일, 한 줄의 가계부를 더 적어 두는 일 — " +
-        "그 사소한 손길들이 모여 한 달 뒤, 석 달 뒤의 풍경을 조용히 그러나 분명하게 바꿔 놓을 것입니다.";
-      advice =
-        "<strong>조언</strong> — 큰 그림을 새로 그리려 애쓰지 마세요. 지금 필요한 것은 오늘 할 수 있는 단 한 가지를 단단히 해내는 손끝의 힘입니다. " +
-        "거대한 결심보다 작은 약속을 지키는 일이 운을 키웁니다. " +
-        "조급해질 때는 잠시 멈춰서, 이미 곁에 있는 사람과 이미 가진 것 위에서 다음 한 발을 디뎌 보세요. 멀리 보이는 답은, 사실 가까이에 늘 놓여 있었습니다.";
-    } else {
-      const lead = majors === 2
-        ? "운명의 큰 별 두 점과 일상의 한 결이 함께 놓였습니다. 굵직한 흐름이 우세하되, 그 흐름이 결국 손에 잡히는 한 가지 구체적인 현실로 모이고 있다는 신호입니다."
-        : "운명의 큰 별 한 점과 일상의 두 결이 나란히 놓였습니다. 매일의 자잘한 사건들이 사실은 더 큰 줄기를 향해 천천히 모이고 있다는 신호입니다.";
-      title = "큰 흐름과 일상이 만납니다";
-      body =
-        lead + " " +
-        "보이지 않는 큰 물결 위에서, 손에 잡히는 구체적인 사건들이 움직이는 점괘입니다. 한쪽만 보고 판단하면 길을 잃기 쉽습니다." +
-        "<br><br>" +
-        "메이저가 가리키는 방향은 '왜 지금 이 일이 일어나는가'에 대한 답이고, 마이너가 건네는 단서는 '그렇다면 오늘 무엇부터 할 것인가'에 대한 답입니다. " +
-        "이 둘은 서로 어긋난 신호가 아니라, 같은 곡을 다른 음역으로 부르는 화음입니다. " +
-        "큰 의미를 붙잡되 작은 손길을 잊지 말고, 작은 일에 매몰되더라도 가끔은 고개를 들어 멀리 있는 별을 다시 바라보세요. " +
-        "두 결이 만나는 자리에서, 당신만 들을 수 있는 정확한 음이 울릴 것입니다.";
-      advice =
-        "<strong>조언</strong> — 큰 방향은 의심하지 말고 신뢰하되, 매일의 한 걸음에는 더 정성을 들이세요. " +
-        "흐름을 알아보는 것과, 그 흐름 위에서 실제로 한 발을 내딛는 일은 전혀 다른 차원의 일입니다. " +
-        "오늘의 사소한 선택이 운명의 큰 줄기와 어디에서 맞닿는지 한 번쯤 가만히 들여다보세요. 바로 그 자리에서, 가야 할 길이 또렷해질 것입니다.";
-    }
+    // Narrative arc through three cards
+    const arc = composeArc(results);
+
+    // Element tone line
+    const elementLine = RNG.pick(ELEMENT_LINES[a.dominantElement]);
+
+    // Reversed-count modifier
+    const reversedLine = REVERSED_LINES[a.reversed];
+
+    // Numerology insight
+    const lifepathLine = LIFEPATH_LINES[a.lifePath];
+
+    // Court aside (if any court cards in triad)
+    const courtAside = a.courtCount > 0 ? " " + RNG.pick(COURT_ASIDES) : "";
+
+    const body =
+      opener + "<br><br>" +
+      arc + "<br><br>" +
+      elementLine + " " + reversedLine + " " + lifepathLine + courtAside;
+
+    const adviceLine = RNG.pick(DOMAIN_ADVICE[domain] || DOMAIN_ADVICE.general);
+    const closer = RNG.pick(CLOSERS);
+    const advice = `<strong>조언</strong> — ${adviceLine}<br><br>${closer}`;
 
     return { title, body, advice };
   }
