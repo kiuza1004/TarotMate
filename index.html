@@ -491,12 +491,85 @@
     100% { transform: translateY(0) rotate(0); opacity: 1; }
   }
   .deck-area .card.picked {
-    opacity: 0.25;
-    transform: scale(0.92);
-    pointer-events: none;
+    transform: translateY(-4px) scale(0.97);
+    filter: drop-shadow(0 6px 14px rgba(245, 208, 97, 0.35));
   }
-  .deck-area .card:not(.picked):active {
+  .deck-area .card.picked .card-back {
+    border-color: var(--accent-gold);
+    box-shadow:
+      0 0 0 2px var(--accent-gold),
+      inset 0 0 0 3px rgba(6, 4, 16, 0.75),
+      inset 0 0 0 4px rgba(245, 208, 97, 0.85),
+      inset 0 0 24px rgba(0, 0, 0, 0.7),
+      0 0 18px rgba(245, 208, 97, 0.4);
+  }
+  .deck-area .card:active {
     transform: scale(0.95);
+  }
+  .pick-badge {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 55%, var(--accent-gold-dim) 100%);
+    color: var(--parchment-ink);
+    font-weight: 800;
+    font-size: 13px;
+    font-family: "Cinzel", "Times New Roman", "Noto Serif KR", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--bg-deep);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 250, 220, 0.8);
+    z-index: 6;
+    pointer-events: none;
+    animation: pickBadgePop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes pickBadgePop {
+    0%   { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pick-hint {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 4px;
+    font-weight: 400;
+    word-break: keep-all;
+    line-height: 1.5;
+  }
+
+  .pick-actions {
+    position: sticky;
+    top: 0;
+    margin-bottom: 4px;
+    padding: 6px 0 12px;
+    background:
+      linear-gradient(to bottom,
+        var(--bg-deep) 0%,
+        var(--bg-deep) 55%,
+        rgba(15, 7, 32, 0.85) 80%,
+        transparent 100%);
+    z-index: 10;
+  }
+  #btn-confirm-pick {
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+  }
+  #btn-confirm-pick:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  #btn-confirm-pick.ready {
+    animation: confirmReady 1.8s ease-in-out infinite;
+  }
+  @keyframes confirmReady {
+    0%, 100% { box-shadow: 0 6px 18px rgba(245, 208, 97, 0.3); }
+    50%      { box-shadow: 0 8px 26px rgba(245, 208, 97, 0.55); }
   }
 
   /* ===== Result Screen ===== */
@@ -696,11 +769,39 @@
   }
 
   /* Small screen adjustments */
-  @media (max-width: 360px) {
-    .header h1 { font-size: 24px; }
-    .deck-area { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 400px) {
+    .app { padding: 20px 12px 36px; gap: 16px; }
+    .deck-area { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .card-front-content { inset: 16px 11px; }
+    .card-front .num-banner { font-size: 10px; padding: 1px 10px 2px; letter-spacing: 0.18em; }
+    .card-front .name { font-size: 10px; letter-spacing: 0.06em; }
+    .card-front .name-en { font-size: 6.5px; letter-spacing: 0.16em; }
     .card-front .symbol { font-size: 1.9rem; }
-    .card-front .num { font-size: 9px; }
+    .pick-info { font-size: 14px; }
+    .pick-info .count { font-size: 16px; }
+    .pick-hint { font-size: 11.5px; }
+    .pick-badge { width: 20px; height: 20px; font-size: 11.5px; }
+    .result-cards { gap: 8px; }
+    .result-slot .position-label { font-size: 10px; letter-spacing: 0.14em; padding: 3px 8px; }
+  }
+
+  @media (max-width: 340px) {
+    .header h1 { font-size: 22px; }
+    .header p { font-size: 12px; }
+    .deck-area { gap: 6px; }
+    .card-front-content { inset: 13px 8px; }
+    .card-front .num-banner { font-size: 9px; padding: 1px 7px 2px; letter-spacing: 0.14em; }
+    .card-front .name { font-size: 9px; letter-spacing: 0.04em; }
+    .card-front .name-en { font-size: 6px; letter-spacing: 0.12em; }
+    .card-front .symbol { font-size: 1.7rem; }
+    .pick-hint { font-size: 11px; }
+    .pick-badge { width: 18px; height: 18px; font-size: 10.5px; border-width: 1px; }
+    .interpret-card { padding: 14px 12px; }
+    .interpret-card .card-name { font-size: 16px; }
+    .interpret-card .prophecy { font-size: 13.5px; line-height: 1.7; }
+    .overall-prophecy { padding: 18px 14px 16px; }
+    .overall-prophecy .summary-title { font-size: 16px; }
+    .overall-prophecy .summary-body { font-size: 13.5px; }
   }
 </style>
 </head>
@@ -932,9 +1033,12 @@
     <div class="question-display" id="question-echo"></div>
     <div class="pick-info">
       카드 <span class="count" id="pick-count">0</span> / 3
-      <div style="font-size:12px;color:var(--text-sub);margin-top:4px;font-weight:400;">
-        마음에 드는 카드 3장을 순서대로 선택하세요
+      <div class="pick-hint">
+        카드 3장을 순서대로 선택하세요 · 다시 누르면 취소됩니다
       </div>
+    </div>
+    <div class="pick-actions">
+      <button class="btn btn-primary" id="btn-confirm-pick" disabled>운명을 펼치기</button>
     </div>
     <div class="deck-area" id="deck-area"></div>
   </section>
@@ -2858,22 +2962,55 @@
   }
 
   function onPickCard(idx, el) {
-    if (state.picked.includes(idx)) return;
-    if (state.picked.length >= 3) return;
-    if (el.classList.contains("picked")) return;
+    const selectedAt = state.picked.indexOf(idx);
 
-    state.picked.push(idx);
-    el.classList.add("picked");
-    updatePickCount();
-
-    if (state.picked.length === 3) {
-      setTimeout(() => goToResult(), 500);
+    if (selectedAt !== -1) {
+      // 이미 선택된 카드 → 취소
+      state.picked.splice(selectedAt, 1);
+      el.classList.remove("picked");
+      const badge = el.querySelector(".pick-badge");
+      if (badge) badge.remove();
+      refreshPickBadges();
+    } else {
+      // 새 선택. 3장 다 찼으면 무시
+      if (state.picked.length >= 3) return;
+      state.picked.push(idx);
+      el.classList.add("picked");
+      setPickBadge(el, state.picked.length);
     }
+    updatePickCount();
+  }
+
+  function setPickBadge(el, order) {
+    let badge = el.querySelector(".pick-badge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.className = "pick-badge";
+      el.appendChild(badge);
+    }
+    badge.textContent = order;
+  }
+
+  function refreshPickBadges() {
+    const deckArea = $("#deck-area");
+    state.picked.forEach((deckIdx, i) => {
+      const el = deckArea.querySelector(`.card[data-idx="${deckIdx}"]`);
+      if (el) setPickBadge(el, i + 1);
+    });
   }
 
   function updatePickCount() {
     $("#pick-count").textContent = state.picked.length;
+    const confirmBtn = $("#btn-confirm-pick");
+    const ready = state.picked.length === 3;
+    confirmBtn.disabled = !ready;
+    confirmBtn.classList.toggle("ready", ready);
   }
+
+  $("#btn-confirm-pick").addEventListener("click", () => {
+    if (state.picked.length !== 3) return;
+    goToResult();
+  });
 
   // ============================================
   // 8. SCREEN: RESULT
@@ -2937,7 +3074,7 @@
     const overall = buildOverallProphecy(state.results);
     const overallEl = $("#overall-prophecy");
     $("#overall-title").textContent = overall.title;
-    $("#overall-body").textContent = overall.body;
+    $("#overall-body").innerHTML = overall.body;
     $("#overall-advice").innerHTML = overall.advice;
     overallEl.hidden = false;
     overallEl.classList.remove("visible");
@@ -2967,20 +3104,70 @@
     const majors = results.filter(r => !r.card.suit).length;
     const minors = 3 - majors;
 
+    // 마이너 슈트 분포 → 톤 결정
+    const suitCounts = { w: 0, c: 0, s: 0, p: 0 };
+    results.forEach(r => { if (r.card.suit) suitCounts[r.card.suit]++; });
+    const dominant = Object.entries(suitCounts).sort((a, b) => b[1] - a[1])[0];
+    const SUIT_TONES = {
+      w: { name: "완드(불)",   domain: "열정·창조·실행의 영역",   verb: "타오릅니다" },
+      c: { name: "컵(물)",     domain: "감정·관계·내면의 영역",   verb: "흐릅니다"   },
+      s: { name: "검(바람)",   domain: "사고·판단·결단의 영역",   verb: "베어 갑니다" },
+      p: { name: "펜타클(땅)", domain: "물질·기반·결실의 영역",   verb: "쌓여 갑니다" }
+    };
+
     let title, body, advice;
 
     if (majors === 3) {
       title = "운명의 큰 별이 정렬됩니다";
-      body = "세 장 모두 메이저 아르카나입니다. 작은 사건이 아니라 인생의 큰 줄기가 움직이는 시기입니다. 평범한 결정처럼 보이는 것이 사실은 운명의 분기점일 수 있습니다. 결을 따라 흐름에 몸을 맡기세요.";
-      advice = "<strong>조언</strong> — 사소한 결정이라도 가벼이 넘기지 마세요. 지금의 선택이 오래 메아리칩니다.";
+      body =
+        "세 장 모두 메이저 아르카나입니다. 우주가 직접 펜을 들어 당신의 이름이 적힌 새로운 장(章)을 열고 있는 시기입니다. " +
+        "지금 마주한 일들은 단순한 사건이 아니라, 이 생애의 큰 줄기를 다시 짜내는 매듭들입니다. " +
+        "그래서 평소라면 무심히 스쳐 보냈을 만남 하나, 결정 하나, 미루어 둔 한 마디가 뜻밖에 깊고 오래가는 파장을 만들어 냅니다." +
+        "<br><br>" +
+        "이 시기에는 마치 멀리서 보이지 않는 자석이 당신을 끌어당기듯, 어떤 길은 자꾸만 가까워지고 어떤 문은 천천히 그러나 분명하게 닫혀 갑니다. " +
+        "억지로 거스르기보다, 그 흐름의 결을 가만히 읽고 손에 쥔 것을 한 번쯤 다시 살펴 보세요. " +
+        "감추어 둔 진심, 미루어 둔 결심, 두려워서 외면해 온 가능성 — 이 셋 가운데 하나는 곧 표면 위로 떠오를 것입니다. " +
+        "그것을 마주하는 태도가, 다음 장의 첫 줄을 어떤 문장으로 쓸지를 결정합니다.";
+      advice =
+        "<strong>조언</strong> — 사소해 보이는 결정이라도 가볍게 흘려보내지 마세요. 지금 내딛는 한 걸음은 시간이 흐른 뒤에 가장 오래 메아리치는 발자국이 됩니다. " +
+        "흔들릴 때는 머리보다 가슴이 먼저 내놓는 답을 신뢰하고, 이미 알고 있던 진실을 더는 미루지 마세요. " +
+        "운명은 등을 떠밀지 않습니다. 다만 문을 열어 둔 채, 당신이 두려움을 내려놓고 들어오기를 조용히 기다릴 뿐입니다.";
     } else if (minors === 3) {
+      const tone = SUIT_TONES[dominant[0]];
+      const tied = dominant[1] < 2;
+      const suitLine = tied
+        ? "세 슈트가 고르게 흩어져, 어느 한 영역이 아니라 일상 전반의 자잘한 결들이 한꺼번에 움직이고 있습니다."
+        : `특히 ${tone.name}의 기운이 두드러져, ${tone.domain}에서 가장 또렷한 신호가 ${tone.verb}.`;
       title = "일상의 결이 풀려갑니다";
-      body = "세 장 모두 마이너 아르카나입니다. 거창한 변화보다 일상의 구체적인 사건, 관계, 일·돈의 결이 보입니다. 손에 잡히는 실용적인 단서들이 도착했습니다. 그것을 차분히 하나씩 다루세요.";
-      advice = "<strong>조언</strong> — 큰 그림을 그리기보다, 오늘 할 수 있는 한 가지를 단단히 해내세요.";
+      body =
+        "세 장 모두 마이너 아르카나입니다. 거창한 운명의 종소리가 아니라, 매일 마주치는 사람·말·돈·일·습관의 작은 매듭들이 지금 하나씩 풀려 가고 있습니다. " +
+        "단 한 번에 인생을 뒤집을 사건은 보이지 않습니다. 대신, 손에 잡히고 발로 디딜 수 있는 구체적인 단서들이 줄지어 도착해 있습니다." +
+        "<br><br>" +
+        suitLine + " " +
+        "이런 시기에는 멀리 있는 큰 그림을 다시 그리려 애쓰기보다, 오늘 책상 위에 놓인 문제부터 차분히 풀어 가는 편이 결국 가장 빠른 길이 됩니다. " +
+        "한 통의 메시지를 미루지 않는 일, 한 번의 사과를 늦추지 않는 일, 한 줄의 가계부를 더 적어 두는 일 — " +
+        "그 사소한 손길들이 모여 한 달 뒤, 석 달 뒤의 풍경을 조용히 그러나 분명하게 바꿔 놓을 것입니다.";
+      advice =
+        "<strong>조언</strong> — 큰 그림을 새로 그리려 애쓰지 마세요. 지금 필요한 것은 오늘 할 수 있는 단 한 가지를 단단히 해내는 손끝의 힘입니다. " +
+        "거대한 결심보다 작은 약속을 지키는 일이 운을 키웁니다. " +
+        "조급해질 때는 잠시 멈춰서, 이미 곁에 있는 사람과 이미 가진 것 위에서 다음 한 발을 디뎌 보세요. 멀리 보이는 답은, 사실 가까이에 늘 놓여 있었습니다.";
     } else {
+      const lead = majors === 2
+        ? "운명의 큰 별 두 점과 일상의 한 결이 함께 놓였습니다. 굵직한 흐름이 우세하되, 그 흐름이 결국 손에 잡히는 한 가지 구체적인 현실로 모이고 있다는 신호입니다."
+        : "운명의 큰 별 한 점과 일상의 두 결이 나란히 놓였습니다. 매일의 자잘한 사건들이 사실은 더 큰 줄기를 향해 천천히 모이고 있다는 신호입니다.";
       title = "큰 흐름과 일상이 만납니다";
-      body = "운명의 굵직한 흐름과 일상의 결이 함께 어우러진 점괘입니다. 보이지 않는 큰 물결 위에서, 손에 잡히는 구체적인 사건들이 움직입니다. 한쪽만 보지 말고 두 결을 모두 읽으세요.";
-      advice = "<strong>조언</strong> — 큰 방향은 신뢰하되, 매일의 한 걸음에 정성을 들이세요.";
+      body =
+        lead + " " +
+        "보이지 않는 큰 물결 위에서, 손에 잡히는 구체적인 사건들이 움직이는 점괘입니다. 한쪽만 보고 판단하면 길을 잃기 쉽습니다." +
+        "<br><br>" +
+        "메이저가 가리키는 방향은 '왜 지금 이 일이 일어나는가'에 대한 답이고, 마이너가 건네는 단서는 '그렇다면 오늘 무엇부터 할 것인가'에 대한 답입니다. " +
+        "이 둘은 서로 어긋난 신호가 아니라, 같은 곡을 다른 음역으로 부르는 화음입니다. " +
+        "큰 의미를 붙잡되 작은 손길을 잊지 말고, 작은 일에 매몰되더라도 가끔은 고개를 들어 멀리 있는 별을 다시 바라보세요. " +
+        "두 결이 만나는 자리에서, 당신만 들을 수 있는 정확한 음이 울릴 것입니다.";
+      advice =
+        "<strong>조언</strong> — 큰 방향은 의심하지 말고 신뢰하되, 매일의 한 걸음에는 더 정성을 들이세요. " +
+        "흐름을 알아보는 것과, 그 흐름 위에서 실제로 한 발을 내딛는 일은 전혀 다른 차원의 일입니다. " +
+        "오늘의 사소한 선택이 운명의 큰 줄기와 어디에서 맞닿는지 한 번쯤 가만히 들여다보세요. 바로 그 자리에서, 가야 할 길이 또렷해질 것입니다.";
     }
 
     return { title, body, advice };
@@ -3009,6 +3196,9 @@
     const overallEl = $("#overall-prophecy");
     overallEl.hidden = true;
     overallEl.classList.remove("visible");
+    const confirmBtn = $("#btn-confirm-pick");
+    confirmBtn.disabled = true;
+    confirmBtn.classList.remove("ready");
     updatePickCount();
     showScreen("intro");
   });
